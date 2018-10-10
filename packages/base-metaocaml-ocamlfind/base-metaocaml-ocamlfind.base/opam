@@ -1,0 +1,20 @@
+opam-version: "2.0"
+maintainer: "yallop@gmail.com"
+authors: ["Jeremy Yallop"]
+depopts: ["ocamlfind"]
+homepage: "https://github.com/ocaml/opam-repository/tree/master/packages/base-metaocaml-ocamlfind/base-metaocaml-ocamlfind.base"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+install: [
+  [ "mkdir" "-p" "%{lib}%/findlib.conf.d/"          ] {ocamlfind:installed}
+  [ "cp" "metaocaml.conf" "%{lib}%/findlib.conf.d/" ] {ocamlfind:installed}
+]
+remove: [
+  [ "rm" "-f" "%{lib}%/findlib.conf.d/metaocaml.conf" ]
+]
+synopsis: "Findlib toolchain configuration for MetaOCaml."
+depends: [
+  "ocaml"
+  "ocaml-variants" {= "4.02.1+BER" | = "4.02.1+modular-implicits-ber"}
+]
+flags: light-uninstall
+extra-files: ["metaocaml.conf" "md5=c3e36877739c3147e3efecd5c3698473"]
