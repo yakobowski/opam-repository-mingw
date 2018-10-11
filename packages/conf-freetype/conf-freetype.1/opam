@@ -5,10 +5,7 @@ homepage: "http://www.freetype.org"
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
 license: "GPL"
 build: [["pkg-config" "freetype2"]]
-depends: [
-  "ocaml"
-  "conf-pkg-config" {build}
-]
+depends: ["conf-pkg-config" {build}]
 depexts: [
   ["libfreetype6-dev"] {os-distribution = "ubuntu"}
   ["libfreetype6-dev"] {os-distribution = "debian"}
@@ -23,6 +20,6 @@ depexts: [
   ["freetype"] {os = "macos" & os-distribution = "homebrew"}
   ["freetype2"] {os = "win32" & os-distribution = "cygwinports"}
 ]
-synopsis: "Virtual package relying on a freetype lib system installation."
+synopsis: "Virtual package relying on a freetype lib system installation"
 description:
   "This package can only install if the freetype lib is installed on the system."

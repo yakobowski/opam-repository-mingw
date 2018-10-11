@@ -3,9 +3,8 @@ maintainer: "blue-prawn"
 authors: ["Daniel Stenberg"]
 homepage: "http://curl.haxx.se/"
 license: "BSD-like"
-depends: ["ocaml" "conf-pkg-config"]
 build: ["pkg-config" "libcurl"] {os != "macos"}
-depends: ["ocaml" "conf-pkg-config"]
+depends: ["conf-pkg-config" {build & os != "macos"}]
 depexts: [
   ["libcurl4-gnutls-dev"] {os-distribution = "debian"}
   ["libcurl-devel"] {os-distribution = "mageia"}
@@ -18,6 +17,7 @@ depexts: [
   ["libcurl-devel"] {os-distribution = "opensuse"}
   ["libcurl-devel"] {os-distribution = "fedora"}
 ]
-synopsis: "Virtual package relying on a libcurl system installation."
+synopsis: "Virtual package relying on a libcurl system installation"
 description:
   "This package can only install if the libcurl is installed on the system."
+bug-reports: "https://github.com/ocaml/opam-repository/issues"

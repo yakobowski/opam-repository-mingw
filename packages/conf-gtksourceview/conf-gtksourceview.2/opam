@@ -4,9 +4,8 @@ authors: "The gtksourceview programmers"
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
 homepage: "https://projects.gnome.org/gtksourceview/"
 license: "LGPL 2.1"
-depends: ["ocaml" "conf-pkg-config"]
 build: [["pkg-config" "--short-errors" "--print-errors" "gtksourceview-2.0"]]
-depends: ["ocaml" "conf-pkg-config"]
+depends: ["conf-pkg-config" {build}]
 depexts: [
   ["gtksourceview2-dev"] {os-distribution = "alpine"}
   ["gtksourceview2"] {os-distribution = "archlinux"}
@@ -20,6 +19,6 @@ depexts: [
   ["gtksourceview" "libxml2"] {os = "macos" & os-distribution = "homebrew"}
   ["gtksourceview2.0"] {os = "win32" & os-distribution = "cygwinports"}
 ]
-synopsis: "Virtual package relying on a GtkSourceView system installation."
+synopsis: "Virtual package relying on a GtkSourceView system installation"
 description:
   "This package can only install if libgtksourceview2.0-dev is installed on the system."

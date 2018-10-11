@@ -3,13 +3,15 @@ maintainer: "blue-prawn"
 authors: ["Anthony Green"]
 homepage: "http://sourceware.org/libffi/"
 license: "MIT"
-depends: ["ocaml" "conf-pkg-config"]
 build: [["pkg-config" "libffi"]]
 depexts: [
   ["libffi-dev"] {os-distribution = "debian"}
   ["libffi5-devel"] {os-distribution = "mageia"}
   ["libffi-dev"] {os-distribution = "ubuntu"}
+  ["libffi"] {os = "win32" & os-distribution = "cygwinports"}
 ]
-synopsis: "Virtual package relying on a libffi system installation."
+synopsis: "Virtual package relying on a libffi system installation"
 description:
   "This package can only install if the libffi is installed on the system."
+depends: ["conf-pkg-config" {build}]
+bug-reports: "https://github.com/ocaml/opam-repository/issues"

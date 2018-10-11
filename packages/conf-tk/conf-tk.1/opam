@@ -1,11 +1,12 @@
 opam-version: "2.0"
 maintainer: "tim@gfxmonk.net"
+authors: "Tcl Core Team"
+homepage: "http://www.tcl.tk"
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
 build: [
  ["sh" "check.sh"] {!depext-cygwinports:installed}
  ["sh" "-ecx" "%{bin}%/cygwin-install list | grep -q '^tk:'"] {depext-cygwinports:installed}
 ]
-depends: ["ocaml" "conf-pkg-config"]
 depexts: [
   ["tk-dev"] {os-distribution = "debian"}
   ["tk-dev"] {os-distribution = "ubuntu"}

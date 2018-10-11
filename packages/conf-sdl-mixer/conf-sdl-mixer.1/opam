@@ -9,7 +9,9 @@ depexts: [
   ["libSDL_mixer-devel"] {os-distribution = "mageia"}
   ["SDL_mixer"] {os = "win32" & os-distribution = "cygwinports"}
 ]
-synopsis: "Virtual package relying on a sdl-mixer system installation."
+synopsis: "Virtual package relying on a sdl-mixer system installation"
 description:
   "This package can only install if libsdl-mixer is installed on the system."
-depends: ["ocaml"]
+depends: ["conf-pkg-config" {build}]
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+authors: "Sam Lantinga"
