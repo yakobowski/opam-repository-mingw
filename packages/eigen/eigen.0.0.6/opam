@@ -34,4 +34,4 @@ url {
   src: "https://github.com/ryanrhymes/eigen/archive/0.0.6.tar.gz"
   checksum: "md5=cd094d5bb0394e193a3087ffc353ae94"
 }
-
+available: os != "win32"
