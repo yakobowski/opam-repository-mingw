@@ -1,4 +1,3 @@
-# This Opam file was auto-generated, see the `please.mlt` script.
 opam-version: "2.0"
 maintainer: "Seb Mondet <seb@mondet.org>"
 authors: [
@@ -34,3 +33,4 @@ url {
   src: "https://gitlab.com/smondet/febusy/-/archive/0.0.0/febusy-0.0.0.tar.gz"
   checksum: "md5=b2670e8b26e3d74139e9cd0b335c5424"
 }
+available: os != "win32"
