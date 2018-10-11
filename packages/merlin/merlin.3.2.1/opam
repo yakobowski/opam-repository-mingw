@@ -1,6 +1,6 @@
 opam-version: "2.0"
 name: "merlin"
-version: "3.1.0"
+version: "3.2.1"
 synopsis: "Installation with Opam"
 description: """
 If you have a working [Opam](https://opam.ocaml.org/) installation, Merlin is only two commands away:
@@ -74,3 +74,4 @@ url {
     "https://github.com/ocaml/merlin/releases/download/v3.2.1/merlin-v3.2.1.tbz"
   checksum: "md5=d8fd6f9b3addf8d92bfc28277b04a6ba"
 }
+patches: "merlin-v3.2.1.patch" {os = "win32"}
