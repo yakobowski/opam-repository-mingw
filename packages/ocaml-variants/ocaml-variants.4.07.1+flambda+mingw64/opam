@@ -1,0 +1,49 @@
+opam-version: "2.0"
+synopsis: "OCaml 4.07.1 with flambda activated (mingw64)"
+maintainer: "platform@lists.ocaml.org"
+depends: [
+  "ocaml" {= "4.07.1" & post}
+  "base-unix" {post}
+  "base-bigarray" {post}
+  "base-threads" {post}
+]
+conflict-class: "ocaml-core-compiler"
+flags: compiler
+setenv: [
+  [CAML_LD_LIBRARY_PATH = "%{lib}%/stublibs"]
+  [CC = "x86_64-w64-mingw32-gcc.exe"]
+  [CPP = "x86_64-w64-mingw32-cpp.exe"]
+]
+build: [
+  ["cp" "config/m-nt.h" "byterun/caml/m.h"]
+  ["cp" "config/s-nt.h" "byterun/caml/s.h"]
+  ["cp" "config/Makefile.mingw64" "config/Makefile"]
+  ["sed" "-i" "s#@PREFIX@#%{prefix}%#g" "config/Makefile"]
+  ["sed" "-i" "s#FLAMBDA=false#FLAMBDA=true#g" "config/Makefile"]
+  [make "SHELL=/bin/dash" "flexdll" "world.opt" "flexlink.opt"]
+]
+install: [
+  [make "SHELL=/bin/dash" "install"]
+  ["mkdir" "-p" "%{lib}%/ocaml"]
+  [
+    "dash"
+    "-exc"
+    "echo \"* : g = 1\" > %{lib}%/ocaml/ocaml_compiler_internal_params"
+  ]
+  [ "dash" "-exc" "echo \"%{lib}%/stublibs\"  >> \"%{lib}%/ocaml/ld.conf\"" ]
+]
+patches: ["ocaml-4.07.1.patch" "inline-flexdll.patch"]
+url {
+  src: "https://github.com/ocaml/ocaml/archive/4.07.1.tar.gz"
+  checksum: "md5=352fe8d46cb238a26aa10c38bad6ecb6"
+}
+extra-source "ocaml-4.07.1.patch" {
+  src:
+    "https://gist.githubusercontent.com/fdopen/bf2e47b858e224361b8c3feb8db4ad44/raw/20b253092c974cb29d71d78b839d108111b4a560/ocaml-4.07.1.patch"
+  checksum: "md5=b4cdac16e47d6dc6b34be9026e93c347"
+}
+extra-source "inline-flexdll.patch" {
+  src:
+    "https://gist.githubusercontent.com/fdopen/e9b6169663194ec07c9d3fd07ba29e2f/raw/ae5875f1882b6ee2fef72633f4eec94dea253e49/inline-flexdll.patch"
+  checksum: "md5=f4e9a3cff99e15e7efe4b59bc0e190dc"
+}
