@@ -21,7 +21,7 @@ homepage: "https://github.com/colis-anr/morbig"
 bug-reports: "https://github.com/colis-anr/morbig/issues"
 dev-repo: "git://github.com/colis-anr/morbig.git"
 
-available: [os != "macos"]
+available: os != "macos" & os != "win32"
 depends: [
   "menhir"
   "ocaml"                {build & >= "4.03"}
