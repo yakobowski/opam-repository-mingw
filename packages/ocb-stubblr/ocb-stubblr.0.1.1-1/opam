@@ -17,10 +17,10 @@ depends: [
 build: [ "ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "false" ]
 
 patches: [
-    "custom-cclib.patch"
-    "use-OPAM_SWITCH_PREFIX.patch"
+  "custom-cclib.patch"
+  "use-OPAM_SWITCH_PREFIX.patch"
+  "ocb-stubblr-0.1.1.patch" {os = "win32"}
 ]
-
 synopsis: "OCamlbuild plugin for C stubs"
 description: """
 Do you get excited by C stubs? Do they sometimes make you swoon, and even faint,
@@ -52,5 +52,9 @@ extra-files: [
   [
     "use-OPAM_SWITCH_PREFIX.patch"
     "md5=a7271bb1f862bd3da4ffd9caa87ca76f"
+  ]
+  [
+    "ocb-stubblr-0.1.1.patch"
+    "md5=9d527ce5efe564fef9d836ce5cb2c3bd"
   ]
 ]
