@@ -72,7 +72,23 @@
  (* system detection *)
  
  let has_prefix s pfx =
-@@ -158,7 +201,25 @@
+@@ -88,7 +131,14 @@
+ 
+ let arch = opam_query "arch"
+ let os = opam_query "os"
+-let distribution = opam_query "os-distribution"
++let distribution =
++  if not is_win then
++    opam_query "os-distribution"
++  else if has_command "cygwin-install" then
++    "cygwinports"
++  else
++    "win32"
++
+ let family = opam_query "os-family"
+ 
+ let opam_vars = [
+@@ -158,7 +208,26 @@
    | "alpine" ->
      ["apk"::"add"::packages]
    | "suse" | "opensuse" ->
@@ -96,25 +112,44 @@
 +       hda::accu_whole
 +     in
 +     iter [] [] 0 packages
++  | "windows" -> [["true"]] (* not supported yet *)
    | s ->
      fatal_error "Sorry, don't know how to install packages on your %s system" s
  
-@@ -247,12 +308,13 @@
-          | [pkg;_;_;"installed"] -> (try StringMap.find pkg virtual_map @ acc with Not_found -> acc)
-          | _ -> acc)
-       installed lines
--  | "centos" | "fedora" | "mageia" | "archlinux" | "gentoo" | "alpine" | "rhel" | "oraclelinux" ->
-+  | "centos" | "fedora" | "mageia" | "archlinux" | "gentoo" | "alpine" | "rhel" | "oraclelinux" | "windows" ->
-     let query_command_prefix = match distribution with
-       | "centos" | "fedora" | "mageia" | "rhel" | "oraclelinux" -> ["rpm"; "-qi"]
-       | "archlinux" -> ["pacman"; "-Q"]
-       | "gentoo" -> ["equery"; "list"]
+@@ -185,6 +254,15 @@
+ 
+ (* filter 'packages' to retain only the installed ones *)
+ let get_installed_packages (packages: string list): string list =
++  let f query_command_prefix =
++    List.filter
++      (fun pkg_name ->
++         let cmd = query_command_prefix @ [pkg_name] in
++         match run_command ~no_stderr:true cmd with
++         | Unix.WEXITED 0 -> true (* installed *)
++         | Unix.WEXITED 1 -> false (* not installed *)
++         | exit_status -> raise (Signaled_or_stopped (cmd, exit_status))
++      ) packages in
+   match family with
+   | "homebrew" ->
+     let lines = try lines_of_command "brew list" with _ -> [] in
+@@ -255,14 +333,8 @@
        | "alpine" -> ["apk"; "info"; "-e"]
-+      | "cygwinports" -> [ "cygwin-install.exe"; "status" ]
        | _ -> assert(false)
      in
-     List.filter
-@@ -381,7 +443,7 @@
+-    List.filter
+-      (fun pkg_name ->
+-         let cmd = query_command_prefix @ [pkg_name] in
+-         match run_command ~no_stderr:true cmd with
+-         | Unix.WEXITED 0 -> true (* installed *)
+-         | Unix.WEXITED 1 -> false (* not installed *)
+-         | exit_status -> raise (Signaled_or_stopped (cmd, exit_status))
+-      ) packages
++    f query_command_prefix
++  | "windows" when distribution = "cygwinports" -> f [ "cygwin-install.exe"; "status" ]
+   | "bsd" ->
+     (match distribution with
+      | "freebsd" ->
+@@ -381,7 +453,7 @@
    if install_arg && opam_packages <> [] then begin
      (if not short then Printf.eprintf "# Now letting OPAM install the packages\n%!");
      (if !debug then Printf.eprintf "+ %s\n%!" (String.concat " " opam_cmdline));
