@@ -9,7 +9,7 @@ install: [
 ]
 remove: [["ocamlfind" "remove" "sdl"]]
 depends: [
-  "ocaml" {< "4.06"}
+  "ocaml" {< "4.06" | os != "win32"}
   "ocamlfind"
 ]
 depopts: [
@@ -37,7 +37,6 @@ authors: [
   "Julien Boulnois <jboulnois@gmail.com>"
 ]
 homepage: "http://ocamlsdl.sourceforge.net/"
-available: os != "win32"
 synopsis: "Interface between OCaml and SDL"
 flags: light-uninstall
 extra-files: [
