@@ -14,12 +14,10 @@ remove: [
   ["ocamlfind" "remove" "dyp"]
 ]
 depends: [
-  "ocaml" {< "4.05.0"}
+  "ocaml" {< "4.05.0" | (os != "win32" & < "4.06.0")}
   "ocamlfind"
 ]
 patches: ["install-bsd-compatible.patch"]
-available: os != "win32"
-available: os != "win32"
 synopsis: "Self-extensible parsers and lexers for OCaml"
 description: """
 dypgen is a GLR parser generator for OCaml, it is able to
