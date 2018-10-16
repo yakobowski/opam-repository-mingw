@@ -1,0 +1,18 @@
+--- ./Makefile
++++ ./Makefile
+@@ -62,10 +62,14 @@
+ # The extension of object files.
+ OBJ := $(shell ocamlc -config | sed -n '/^ext_obj:/p' | sed 's/ext_obj: //')
+ # The extension of executable files.
+-EXE := $(shell ocamlc -config | sed -n '/^ext_exe:/p' | sed 's/ext_exe: //')
++#EXE := $(shell ocamlc -config | sed -n '/^ext_exe:/p' | sed 's/ext_exe: //')
+ # The OS type.
+ OS_TYPE := $(shell ocamlc -config | sed -n '/^os_type:/p' | sed 's/os_type: //')
+ 
++ifeq ($(OS_TYPE),$(filter $(OS_TYPE),Win32 Cygwin))
++EXE := .exe
++endif
++
+ # The path $(installation_libdir), which is recorded in src/installation.ml (see
+ # below), must sometimes be translated using cygpath.
+ 
