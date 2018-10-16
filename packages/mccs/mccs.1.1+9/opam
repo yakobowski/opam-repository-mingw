@@ -17,6 +17,13 @@ build: [
   ["sh" "-c" "jbuilder build @settests --auto-promote || true"] {with-test}
   ["jbuilder" "runtest"] {with-test}
 ]
+depexts: ["gcc-g++"] {os = "win32" & os-distribution = "cygwinports"}
+synopsis: "Multi Criteria CUDF Solver with OCaml bindings"
+description: """
+This is a stripped-down version of the mccs solver (written in C++), including
+OCaml bindings based on the cudf library, and the GLPK backend (in C). Note that
+it also includes some correction fixes, and a few changes not present in the
+upstream yet."""
 dev-repo: "git+https://github.com/AltGr/ocaml-mccs.git"
 url {
   src: "https://github.com/AltGr/ocaml-mccs/archive/1.1+9.tar.gz"
