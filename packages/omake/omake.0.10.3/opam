@@ -12,6 +12,10 @@ dev-repo: "git+https://github.com/ocaml-omake/omake.git"
 homepage: "http://projects.camlcity.org/projects/omake.html"
 bug-reports: "https://github.com/ocaml-omake/issues"
 
+patches: [
+  "lib_build_OCaml.om.diff"
+  "omake-0.10.3.patch" {os = "win32"}
+]
 build: [
   ["ocamlfind" "ocamlopt" "-linkpkg" "-package" "str,cygwinpath" "ohelper.ml" "-o" "omake-mmtranslate.exe"] { os = "win32" }
   ["install" "-m" "0755" "omake-mmtranslate.exe" "%{bin}%/omake-mmtranslate.exe"] { os = "win32" }
@@ -35,12 +39,12 @@ depends: [
   "ocamlfind"
   "cygwinpath" {build}
 ]
-patches: "omake-0.10.3.patch" {os = "win32"}
 synopsis: "Build system designed for scalability and portability"
 flags: light-uninstall
 extra-files: [
   ["omake-0.10.3.patch" "md5=d01d5f7798e36dc0af34dad6a602ca92"]
   ["ohelper.ml" "md5=af6f44994f83331439ce3ceb6b67f860"]
+  [ "lib_build_OCaml.om.diff" "md5=04f4ee4d33cf137fc0ac0c8f880bbc06" ]
 ]
 url {
   src: "http://download.camlcity.org/download/omake-0.10.3.tar.gz"
