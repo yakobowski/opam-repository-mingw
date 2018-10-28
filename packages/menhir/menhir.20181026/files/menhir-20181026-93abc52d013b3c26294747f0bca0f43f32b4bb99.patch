@@ -1,0 +1,16 @@
+--- ./Makefile
++++ ./Makefile
+@@ -65,9 +65,12 @@
+ # Note: the field "ext_exe" seems to have appeared in OCaml 4.05.
+ # With earlier versions of OCaml, this incantation defines $(EXE)
+ # as the empty string, which could be a problem under Windows.
+-EXE := $(shell ocamlc -config | sed -n '/^ext_exe:/p' | sed 's/ext_exe: //')
++#EXE := $(shell ocamlc -config | sed -n '/^ext_exe:/p' | sed 's/ext_exe: //')
+ # The OS type.
+ OS_TYPE := $(shell ocamlc -config | sed -n '/^os_type:/p' | sed 's/os_type: //')
++ifeq ($(OS_TYPE),$(filter $(OS_TYPE),Win32 Cygwin))
++EXE := .exe
++endif
+ 
+ # The path $(installation_libdir), which is recorded in src/installation.ml (see
+ # below), must sometimes be translated using cygpath.
