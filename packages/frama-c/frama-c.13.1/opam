@@ -1,6 +1,6 @@
 opam-version: "2.0"
 name: "frama-c"
-version: "20160502"
+version: "13.1"
 maintainer: "francois.bobot@cea.fr"
 authors: [
   "Patrick Baudin"
@@ -51,7 +51,7 @@ tags: [
 
 depends: [
   "ocaml" {>= "4.00.1" & != "4.02.0" & != "4.02.2"}
-  "frama-c-base" {= "20160502"}
+  "frama-c-base" {= "13.1"}
   "zarith"
   "lablgtk" {>= "2.18.2"}
   "conf-gtksourceview"
