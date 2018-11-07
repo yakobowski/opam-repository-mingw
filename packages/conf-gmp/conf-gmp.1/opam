@@ -33,3 +33,4 @@ extra-files: [
   ["test.c" "md5=ec8cc21ab709bdd57103de36e7b0b53f"]
   ["test-win.sh" "md5=05384d0d4e7478c22ce97eae13532740"]
 ]
+flags: conf

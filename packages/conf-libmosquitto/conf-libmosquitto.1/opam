@@ -18,3 +18,4 @@ synopsis: "Virtual package relying on a libmosquitto system installation"
 description:
   "This package can only install if the libmosquitto is installed on the system."
 available: os != "win32"
+flags: conf

@@ -18,3 +18,4 @@ depexts: [
   ["lz4"] {os = "win32" & os-distribution = "cygwinports"}
 ]
 synopsis: "Virtual package relying on liblz4 system installation"
+flags: conf
