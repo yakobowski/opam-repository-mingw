@@ -1,0 +1,11 @@
+--- ./src/Makefile.in
++++ ./src/Makefile.in
+@@ -28,7 +28,7 @@
+ RESULT = duppy
+ OCAMLDOCFLAGS = -stars
+ DOC_FILES = $(filter %.mli, $(SOURCES))
+-LIBINSTALL_FILES = $(DOC_FILES) $(wildcard *.cmi *.cma *.cmxa *.cmx *.a *.so)
++LIBINSTALL_FILES = $(DOC_FILES) $(wildcard *.cmt* *.mli *.cmi *.cma *.cmxa *.cmx *.$(EXT_LIB) *.$(EXT_DLL))
+ ACLIBS = @LIBS@
+ LDFLAGS = @LDFLAGS@
+ CLIBS = $(ACLIBS:-l%=%)
