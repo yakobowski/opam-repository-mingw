@@ -33,6 +33,6 @@ extra-files: [
 ]
 url {
   src:
-    "https://forge.ocamlcore.org/frs/download.php/1453/lablgtkextras-1.5.tar.gz"
+    "https://forge-static.ocamlcore.org/frs/download.php/1453/lablgtkextras-1.5.tar.gz"
   checksum: "md5=5d22389967edcab9e39dadca368e99dd"
 }

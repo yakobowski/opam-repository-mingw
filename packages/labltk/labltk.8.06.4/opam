@@ -19,7 +19,7 @@ remove: [
  ["rm" "-f" "%{prefix}%/bin/labltk.bat" "%{prefix}%/bin/ocamlbrowser.exe"] { os = "win32" }
 ]
 depends: [
-  "ocaml" {>= "4.06"}
+  "ocaml" {>= "4.06" & < "4.07.0"}
   "ocamlfind"
   "conf-tcl"
   "conf-tk"
@@ -40,6 +40,6 @@ extra-files: [
 ]
 url {
   src:
-    "https://forge.ocamlcore.org/frs/download.php/1727/labltk-8.06.4.tar.gz"
+    "https://forge-static.ocamlcore.org/frs/download.php/1727/labltk-8.06.4.tar.gz"
   checksum: "md5=48c3815461fb6d060dac9c7d574a7a4f"
 }

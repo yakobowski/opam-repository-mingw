@@ -36,6 +36,6 @@ extra-files: [
   ["patch-zarith-1.4" "md5=04b011d77d64bce0862a13e3cdd44216"]
 ]
 url {
-  src: "https://forge.ocamlcore.org/frs/download.php/1567/zarith-1.4.tgz"
+  src: "https://forge-static.ocamlcore.org/frs/download.php/1567/zarith-1.4.tgz"
   checksum: "md5=8967de3cf9eabe1d73b663bc9916657d"
 }
