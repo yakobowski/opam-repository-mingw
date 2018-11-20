@@ -3,7 +3,7 @@ maintainer: "Spiros Eliopoulos <seliopou@gmail.com>"
 homepage: "https://github.com/frenetic-lang/ocaml-tdk"
 build: [
   ["./configure"]
-  ["make"]
+  [make]
 ]
 remove: [["ocamlfind" "remove" "tdk"]]
 depends: [
@@ -11,7 +11,7 @@ depends: [
   "ocamlfind"
   "ocamlbuild" {build}
 ]
-install: ["make" "install"]
+install: [make "install"]
 dev-repo: "git://github.com/frenetic-lang/ocaml-tdk"
 synopsis: "tdk - The Decision Kit"
 description: """
