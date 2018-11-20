@@ -9,7 +9,7 @@ depends: [
   "ocaml" {>= "4.0.0"}
   "ocamlfind"
   "core" {>= "108.08.00"}
-  "core_extended"
+  "core_extended" {< "v0.12"}
   "csv"
 ]
 install: [make "PREFIX=%{prefix}%" "install"]

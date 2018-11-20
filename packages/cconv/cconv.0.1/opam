@@ -22,7 +22,11 @@ depends: [
   "ocamlfind"
   "ocamlbuild" {build}
 ]
-depopts: ["bencode" "sexplib" "yojson"]
+depopts: [
+  "bencode"
+  "sexplib" {< "v0.12"}
+  "yojson"
+]
 install: [make "install"]
 dev-repo: "git://github.com/c-cube/cconv"
 synopsis: "Combinators for Type Conversion in OCaml."
