@@ -1,22 +1,16 @@
 opam-version: "2.0"
 maintainer: "Markus Mottl <markus.mottl@gmail.com>"
 authors: [ "Markus Mottl <markus.mottl@gmail.com>" ]
-homepage: "https://github.com/mmottl/ocaml-makefile"
+license: "LGPL-2.1+ with OCaml linking exception"
+homepage: "https://mmottl.github.io/ocaml-makefile"
+doc: "https://mmottl.github.io/ocaml-makefile/api"
 dev-repo: "git+https://github.com/mmottl/ocaml-makefile.git"
 bug-reports: "https://github.com/mmottl/ocaml-makefile/issues"
-
-build: [["true"]]
-install: [
-  ["mkdir" "-p" "%{lib}%/ocaml-makefile"]
-  ["cp" "OCamlMakefile" "%{lib}%/ocaml-makefile"]
-]
-remove: [
-  ["rm" "-rf" "%{lib}%/ocaml-makefile"]
-]
-patches: "ocaml-makefile-6.38.0.patch" {os = "win32"}
+build: ["mkdir" "-p" "%{lib}%/ocaml-makefile"]
+install: ["cp" "OCamlMakefile" "%{lib}%/ocaml-makefile"]
 synopsis: "Easy to use Makefile for small to medium-sized OCaml-projects"
 depends: ["ocaml"]
-flags: light-uninstall
+patches: "ocaml-makefile-6.38.0.patch" {os = "win32"}
 extra-files: [
   "ocaml-makefile-6.38.0.patch" "md5=6df98632ecd6e26ba7c6ce6a4a1691e9"
 ]

@@ -35,11 +35,11 @@ depends: [
   "conf-blas"
   "conf-lapack"
 ]
+synopsis: "OCaml-bindings to BLAS and LAPACK"
 patches: [
   "lacaml-9.3.1.patch" {os = "win32"}
   "patch-oasis-lacaml.9.3.1" {os = "win32"}
 ]
-synopsis: "OCaml-bindings to BLAS and LAPACK."
 description: """
 This library interfaces the BLAS-library (Basic Linear Algebra
 Subroutines) and LAPACK-library (Linear Algebra routines), which are

@@ -50,7 +50,7 @@ depexts: [
   ["sqlite3"] {os = "macos" & os-distribution = "macports"}
   ["sqlite3"] {os = "win32" & os-distribution = "cygwinports"}
 ]
-synopsis: "sqlite3-ocaml - SQLite3 bindings"
+synopsis: "SQLite3 bindings"
 description: """
 sqlite3-ocaml is an OCaml library with bindings to the SQLite3 client
 API. Sqlite3 is a self-contained, serverless, zero-configuration,

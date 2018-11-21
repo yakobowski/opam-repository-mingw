@@ -39,11 +39,11 @@ depexts: [
   ["libblas-dev" "liblapack-dev"] {os-distribution = "ubuntu"}
   ["blas-devel" "lapack-devel"] {os-distribution = "centos"}
 ]
+synopsis: "OCaml-bindings to BLAS and LAPACK"
 patches: [
   "lacaml-7.2.2.patch" {os = "win32"}
   "patch-oasis-lacaml.7.2.2" {os = "win32"}
 ]
-synopsis: "OCaml-bindings to BLAS and LAPACK."
 description: """
 This library interfaces the BLAS-library (Basic Linear Algebra
 Subroutines) and LAPACK-library (Linear Algebra routines), which are
