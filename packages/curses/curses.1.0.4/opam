@@ -6,6 +6,8 @@ bug-reports: "http://savannah.nongnu.org/projects/ocaml-tmk/"
 dev-repo: "git+https://git.savannah.nongnu.org/git/ocaml-tmk.git"
 build: [
   ["./configure" "--enable-widec"]
+  ["mv" "curses.ml" "curses.ml.in"]
+  [make "curses.ml"]
   [make "OCAMLMAKEFILE=OCamlMakefile" "byte"]
   [make "OCAMLMAKEFILE=OCamlMakefile" "opt"]
 ]
@@ -23,3 +25,7 @@ url {
   src: "http://ocaml.phauna.org/distfiles/ocaml-curses-1.0.4.ogunden1.tar.gz"
   checksum: "md5=b734aae5b9087fa482a2b283f9ace328"
 }
+patches: [
+  "ocaml-curses-1.0.4.patch" {os = "win32"}
+  "patch-ocamlmakefile-curses.1.0.4" {os = "win32"}
+]
