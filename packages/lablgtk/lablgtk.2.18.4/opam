@@ -33,7 +33,7 @@ depexts: [
   ["gtk2-devel"] {os-distribution = "oraclelinux"}
   ["gtk+2.0-dev"] {os-distribution = "alpine"}
   ["gtk2.0"] {os = "win32" & os-distribution = "cygwinports"}
-  ["gtk2-devel"] {os-distribution = "opensuse"}
+  ["gtk2-devel"] {os-family = "suse"}
 ]
 patches: [
  "lablgldir.patch"

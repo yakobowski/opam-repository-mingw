@@ -22,7 +22,7 @@ depexts: [
   ["openssl"] {os-distribution = "nixos"}
   ["openssl"] {os-distribution = "archlinux"}
   ["openssl"] {os = "win32" & os-distribution = "cygwinports"}
-  ["libopenssl-devel"] {os-distribution = "opensuse"}
+  ["libopenssl-devel"] {os-family = "suse"}
 ]
 synopsis: "Virtual package relying on an OpenSSL system installation"
 description:

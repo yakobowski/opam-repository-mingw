@@ -14,7 +14,7 @@ depexts: [
   ["libffi" "pkg-config"] {os = "win32" & os-distribution = "cygwinports"}
   ["libffi-devel"] {os-distribution = "fedora"}
   ["libffi-dev"] {os-distribution = "alpine"}
-  ["libffi-devel"] {os-distribution = "opensuse"}
+  ["libffi-devel"] {os-family = "suse"}
 ]
 tags: ["org:ocamllabs" "org:mirage"]
 post-messages: [

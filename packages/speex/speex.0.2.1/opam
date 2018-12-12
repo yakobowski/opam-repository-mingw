@@ -14,7 +14,7 @@ depends: ["ocaml" "ocamlfind" "ogg"]
 depexts: [
   ["speex-devel"] {os-distribution = "centos"}
   ["speex-devel"] {os-distribution = "fedora"}
-  ["speex-devel"] {os-distribution = "opensuse"}
+  ["speex-devel"] {os-family = "suse"}
   ["libspeex-dev"] {os-distribution = "ubuntu"}
   ["libspeex-dev"] {os-distribution = "debian"}
   ["speex"] {os = "win32" & os-distribution = "cygwinports"}

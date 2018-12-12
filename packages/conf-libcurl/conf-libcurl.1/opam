@@ -14,7 +14,7 @@ depexts: [
   ["curl"] {os-distribution = "archlinux"}
   ["curl"] {os = "win32" & os-distribution = "cygwinports"}
   ["curl-dev"] {os-distribution = "alpine"}
-  ["libcurl-devel"] {os-distribution = "opensuse"}
+  ["libcurl-devel"] {os-family = "suse"}
   ["libcurl-devel"] {os-distribution = "fedora"}
 ]
 synopsis: "Virtual package relying on a libcurl system installation"
