@@ -29,4 +29,4 @@ extra-files: [
 ]
 
 flags: [conf]
-
+available: os != "win32"
