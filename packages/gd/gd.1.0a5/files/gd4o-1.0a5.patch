@@ -1,0 +1,50 @@
+--- ./Makefile
++++ ./Makefile
+@@ -5,9 +5,10 @@
+ OCAMLMKLIB=ocamlmklib
+ OCAMLFIND=ocamlfind
+ OCAMLDOC=ocamldoc -html
+-OCAMLLIB=`$(OCAMLC) -where`
++XOCAMLLIB=`$(OCAMLC) -where`
+ 
+ TASKINSTALL  = $(OCAMLFIND) install $(NAME) $(TASKINSTALLOPTS)
++EXT_DLL:=$(shell ocamlfind ocamlc -config | awk -F '[\t\r ]+' '/^ext_dll:/ {print $$2}')
+ 
+ # This turns on some checks that should make the library more secure but
+ # may degrade performance. If you're more concerned about performance than
+@@ -17,8 +18,8 @@
+ # Similarly for Freetype2.
+ JPEG_LIB = -ljpeg
+ FT2_LIB = -lfreetype
+-CC=gcc
+-CINCLUDES=-I$(OCAMLLIB) -I/usr/include 
++RCC=$(shell ocamlfind ocamlc -config | awk -F '[\t\r ]+' '/^bytecomp_c_compiler/ {for(i=2;i<=NF;i++) printf "%s " ,$$i}')
++CINCLUDES=-I$(XOCAMLLIB)
+ LIBS=-lgd -lpng -lz $(JPEG_LIB) $(FT2_LIB)
+ ifdef JPEG_LIB
+ JPEG_FLAG = -DHAVE_JPEG
+@@ -35,7 +36,7 @@
+ BYTE_OBJECTS  = gd.cmi gd.cmo
+ NAT_OBJECTS = gd.cmi gd.cmx
+ C_OBJECTS = gdstubs.o
+-STUBLIBS = dllocamlgd.so libocamlgd.a
++STUBLIBS = dllocamlgd$(EXT_DLL) libocamlgd.a
+ BYTE_ARCHIVE  = gd.cma
+ NAT_ARCHIVE = gd.cmxa
+ 
+@@ -62,7 +63,7 @@
+ 
+ 
+ gdstubs.o : gdstubs.c
+-	$(CC) $(CFLAGS) -c gdstubs.c
++	$(RCC) $(CFLAGS) -c gdstubs.c
+ 
+ 
+ test : gdtest
+@@ -103,5 +104,5 @@
+ 
+ 
+ clean :
+-	 -rm -f *.cmi *.cmo *.cmx *.cma *.cmxa *.a *.o *.so \
++	 -rm -f *.cmi *.cmo *.cmx *.cma *.cmxa *.a *.o *$(EXT_DLL) \
+ 	   gdtest gdtest.opt gdtest.log
