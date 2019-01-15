@@ -25,6 +25,6 @@ extra-files: [
 ]
 url {
   src:
-    "http://forge.ocamlcore.org/frs/download.php/892/ocaml-fileutils-0.4.4.tar.gz"
+    "https://forge-static.ocamlcore.org/frs/download.php/892/ocaml-fileutils-0.4.4.tar.gz"
   checksum: "md5=1f43b9333358f47660318bfbe9ae68bf"
 }
