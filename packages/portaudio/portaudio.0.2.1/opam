@@ -12,6 +12,7 @@ install: [
 remove: ["ocamlfind" "remove" "portaudio"]
 depends: ["ocaml" "ocamlfind" "conf-pkg-config"]
 depexts: [
+  ["portaudio-dev"] {os-distribution = "alpine"}
   ["portaudio"] {os = "macos" & os-distribution = "homebrew"}
   ["portaudio19-dev"] {os-distribution = "debian"}
   ["portaudio"] {os = "win32" & os-distribution = "cygwinports"}
