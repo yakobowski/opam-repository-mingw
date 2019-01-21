@@ -38,8 +38,8 @@ depexts: [
   ["libblas-dev" "liblapack-dev"] {os-distribution = "debian"}
   ["libblas-dev" "liblapack-dev"] {os-distribution = "ubuntu"}
   ["blas-devel" "lapack-devel"] {os-distribution = "centos"}
-synopsis: "OCaml-bindings to BLAS and LAPACK"
 ]
+synopsis: "OCaml-bindings to BLAS and LAPACK"
 patches: [
   "lacaml-7.2.1.patch" {os = "win32"}
   "patch-oasis-lacaml.7.2.1" {os = "win32"}
