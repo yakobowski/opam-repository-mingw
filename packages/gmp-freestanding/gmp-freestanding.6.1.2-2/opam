@@ -14,15 +14,14 @@ remove: [
 ]
 depends: [
   "ocaml"
-  "ocaml-freestanding" {>= "0.2.3" & < "0.5.0"}
+  "ocaml-freestanding" {>= "0.4.1"}
 ]
-available: os != "win32"
 synopsis: "The GNU Multiple Precision Arithmetic Library"
 description: "Freestanding build of GNU GMP."
 flags: light-uninstall
 extra-files: [
   ["mirage-install.sh" "md5=aca9a1c985326f95daa51aedef55b318"]
-  ["mirage-build.sh" "md5=5e7d8c8aaacd0045992ba209d584c1db"]
+  ["mirage-build.sh" "md5=c4b411f29867c13595470011d3b77f6c"]
   ["gmp-freestanding.pc" "md5=391473dd7c6957fed3e9e485e456fb6c"]
 ]
 url {
