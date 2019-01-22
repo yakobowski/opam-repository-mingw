@@ -6,7 +6,7 @@ license: "GPL 3"
 homepage: "https://gcc.gnu.org/fortran/"
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
 flags: conf
-build: ["gfortran" "--version"]
+build: ["gfortran" "--version"] {os != "win32"}
 depexts: [
   ["gfortran"] {os-distribution = "debian"}
   ["gfortran"] {os-distribution = "ubuntu"}
