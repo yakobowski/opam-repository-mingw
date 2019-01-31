@@ -33,6 +33,7 @@ depexts: [
   ["libflac-dev"] {os-distribution = "ubuntu"}
   ["flac"] {os-distribution = "nixos"}
   ["flac"] {os = "macos" & os-distribution = "homebrew"}
+  ["flac"] {os = "win32" & os-distribution = "cygwinports"}
 ]
 bug-reports: "https://github.com/savonet/ocaml-flac/issues"
 dev-repo: "git+https://github.com/savonet/ocaml-flac.git"
@@ -44,3 +45,7 @@ url {
     "https://github.com/savonet/ocaml-flac/releases/download/0.1.4/ocaml-flac-0.1.4.tar.gz"
   checksum: "md5=6c2850088e927cfacdb2940792fe2e67"
 }
+patches: [
+  "ocaml-flac-0.1.4.patch" {os = "win32"}
+  "patch-ocamlmakefile-flac.0.1.4" {os = "win32"}
+]
