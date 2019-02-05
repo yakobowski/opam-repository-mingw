@@ -44,3 +44,4 @@ See opam info mlmpfr for all available versions.
 
 If you need support for an older MPFR release, please contact me."""
 extra-files: ["test.c" "md5=caac9325203c5597770834722e58a816"]
+available: os != "win32"
