@@ -1,0 +1,18 @@
+--- ./runtime/cfactory.cpp
++++ ./runtime/cfactory.cpp
+@@ -180,12 +180,12 @@
+ 
+ BOOL APIENTRY DllMain(HANDLE module, DWORD reason, void *reserved)
+ {
+-  char * argv[2];
+-  char dll_path[_MAX_PATH];
++  WCHAR * argv[2];
++  WCHAR dll_path[_MAX_PATH];
+ 
+   switch(reason) {
+   case DLL_PROCESS_ATTACH:
+-    GetModuleFileName( (HMODULE) module, dll_path, _MAX_PATH );
++    GetModuleFileNameW( (HMODULE) module, dll_path, _MAX_PATH );
+     argv[0] = dll_path;
+     argv[1] = NULL;
+     camlidl_module_handle = (HMODULE) module;

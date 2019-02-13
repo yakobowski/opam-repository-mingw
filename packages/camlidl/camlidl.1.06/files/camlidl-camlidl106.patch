@@ -1,0 +1,119 @@
+--- ./config/Makefile.mingw
++++ ./config/Makefile.mingw
+@@ -0,0 +1,38 @@
++#***********************************************************************
++#*                                                                     *
++#*                              CamlIDL                                *
++#*                                                                     *
++#*            Xavier Leroy, projet Cristal, INRIA Rocquencourt         *
++#*                                                                     *
++#*  Copyright 1999 Institut National de Recherche en Informatique et   *
++#*  en Automatique.  All rights reserved.  This file is distributed    *
++#*  under the terms of the GNU Library General Public License.         *
++#*                                                                     *
++#***********************************************************************
++
++#* $Id: Makefile.win32,v 1.6 2004/07/08 12:21:58 xleroy Exp $
++
++## Configuration section
++
++
++OSTYPE=win32
++
++MCC:=$(shell ocamlc -config 2>/dev/null | awk -F '[\t\r ]+' '/^bytecomp_c_compiler/ { print $$2 }')
++
++CPP:=$(shell echo $(MCC) | sed 's|gcc|cpp|')
++RANLIB:=$(shell echo $(MCC) | sed 's|gcc|ranlib|')
++CXX:=$(shell ocamlc -config | awk -F '[\t\r ]+' '/^bytecomp_c_compiler/ {for(i=2;i<=NF;i++) printf "%s " ,$$i}') -x c++
++OCAMLLIB:=$(shell ocamlc -where | tr -d '\015')
++BINDIR:=$(shell opam config var bin)
++STUBLIBDIR:=$(shell opam config var stublibs)
++
++OCAMLC=ocamlc -w -a -g
++OCAMLOPT=ocamlopt -w -a
++OCAMLYACC=ocamlyacc -v
++OCAMLLEX=ocamllex
++OCAMLDEP=ocamldep
++CFLAGS=-Wall -g
++
++EXE=.exe
++LIBEXT=a
++OBJEXT=o
+--- ./runtime/Makefile.win32
++++ ./runtime/Makefile.win32
+@@ -12,33 +12,37 @@
+ 
+ #* $Id: Makefile.win32,v 1.7 2000-08-19 11:05:00 xleroy Exp $
+ 
+-CC=cl
+-CFLAGS=/nologo /Zi /MT /I$(OCAMLLIB)
++#CC=cl
++#CFLAGS=/nologo /Zi /MT /I$(OCAMLLIB)
+ 
+-OBJS=idlalloc.obj comintf.obj comerror.obj superror.obj \
+-  registry.obj dispatch.obj oletypes.obj
++OBJS=idlalloc.o comintf.o comerror.o superror.o \
++  registry.o dispatch.o oletypes.o
+ 
+-all: libcamlidl.lib cfactory.obj
++all: libcamlidl.a cfactory.o
+ 
+-libcamlidl.lib: $(OBJS)
+-	- rm -f $@
+-	lib /nologo /debugtype:CV /out:$@ $(OBJS)
++libcamlidl.a: $(OBJS)
++	ocamlmklib -oc camlidl $(OBJS) -ldopt -lstdc++
++#	- rm -f $@
++#	lib /nologo /debugtype:CV /out:$@ $(OBJS)
+ 
+ install:
+ 	cp camlidlruntime.h $(OCAMLLIB)/caml/camlidlruntime.h
+-	cp libcamlidl.lib $(OCAMLLIB)/libcamlidl.lib
+-	cp cfactory.obj $(OCAMLLIB)/cfactory.obj
++	cp libcamlidl.a $(OCAMLLIB)/libcamlidl.a
++	cd $(OCAMLLIB); $(RANLIB) libcamlidl.a
++	cp cfactory.o $(OCAMLLIB)/cfactory.o
++	test -d $(STUBLIBDIR) || mkdir -p $(STUBLIBDIR)
++	test ! -f dll* || cp dll* $(STUBLIBDIR)
+ 
+ clean:
+-	rm -f *.lib *.obj
++	rm -f *.a *.o
+ 
+-.SUFFIXES: .c .cpp .obj
++.SUFFIXES: .c .cpp .o
+ 
+-.c.obj:
+-	$(CC) $(CFLAGS) -c $<
+-.cpp.obj:
+-	$(CC) $(CFLAGS) -c $<
++.c.o:
++	ocamlc -c $<
++.cpp.o:
++	$(CXX) -I$(OCAMLLIB) -c $<
+ 
+-$(OBJS) cfactory.obj: camlidlruntime.h comstuff.h registry.h
++$(OBJS) cfactory.o: camlidlruntime.h comstuff.h registry.h
+ 
+ depend:
+--- ./tools/Makefile.win32
++++ ./tools/Makefile.win32
+@@ -12,16 +12,11 @@
+ 
+ #* $Id: Makefile.win32,v 1.4 2001-06-21 13:17:19 xleroy Exp $
+ 
+-all: camlidldll
+-
+-camlidldll: camlidldll.tpl ../config/Makefile
+-	sed -e 's|%%CAMLLIB%%|$(OCAMLLIB)|' -e '/^camllib=/s|/|\\|g' camlidldll.tpl > camlidldll
++all:
+ 
+ install:
+-	cp camlidldll $(BINDIR)
+-	cp camlidlcompat.h $(OCAMLLIB)/caml
+ 
+ clean:
+-	rm -f camlidldll
+ 
+ depend:
++
