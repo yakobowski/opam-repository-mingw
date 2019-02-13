@@ -20,12 +20,12 @@
 +
 +OSTYPE=win32
 +
-+MCC:=$(shell ocamlfind ocamlc -config 2>/dev/null | awk '/^bytecomp_c_compiler/ { print $$2 }')
++MCC:=$(shell ocamlc -config 2>/dev/null | awk -F '[\t\r ]+' '/^bytecomp_c_compiler/ { print $$2 }')
 +
 +CPP:=$(shell echo $(MCC) | sed 's|gcc|cpp|')
 +RANLIB:=$(shell echo $(MCC) | sed 's|gcc|ranlib|')
-+CXX:=$(shell echo $(MCC) | sed 's|gcc|g++|')
-+OCAMLLIB:=$(shell ocamlfind ocamlc -where)
++CXX:=$(shell ocamlc -config | awk -F '[\t\r ]+' '/^bytecomp_c_compiler/ {for(i=2;i<=NF;i++) printf "%s " ,$$i}') -x c++
++OCAMLLIB:=$(shell ocamlc -where | tr -d '\015')
 +BINDIR:=$(shell opam config var bin)
 +STUBLIBDIR:=$(shell opam config var stublibs)
 +

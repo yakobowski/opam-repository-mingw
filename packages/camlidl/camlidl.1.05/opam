@@ -2,7 +2,7 @@ opam-version: "2.0"
 maintainer: "Nicolas Berthier <m@nberth.space>"
 authors: ["Xavier Leroy"]
 homepage: "http://caml.inria.fr/pub/old_caml_site/camlidl/"
-# dev-repo: "svn://scm.ocamlcore.org/svn/camlidl/trunk"
+dev-repo: "git+https://github.com/xavierleroy/camlidl.git"
 bug-reports: "http://forge.ocamlcore.org/tracker/?group_id=132"
 license: "QPL-1.0 and LGPL-2 with exceptions"
 build: [
@@ -41,7 +41,7 @@ extra-files: [
   ["disable-fatal-warn-31.diff" "md5=750eef544a6a4f4835b819ca8d740924"]
   ["cpp-location.diff" "md5=bf3ee8e555285ec9140894cf6b0b19a8"]
   ["camlidl.install" "md5=dcfc1f5facc376158982ef4a42d5ea37"]
-  ["camlidl-1.05.patch" "md5=bc61cd4726b13116bc81489f86d126ea"]
+  ["camlidl-1.05.patch" "md5=383871dc504f5049029716ae142cd577"]
   ["META" "md5=66b8e0b9187f7b2d25301e431ff779d9"]
 ]
 url {
