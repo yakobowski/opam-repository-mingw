@@ -65,6 +65,7 @@ a single thread by default. This reduces the need for locks or other
 synchronization primitives. Code can be run in parallel on an opt-in basis."""
 conflicts: [
   "ocaml-variants" {= "4.02.1+BER"}
+  "dune" {>= "1.7.0"}
 ]
 extra-files: ["lwt-3.2.0.patch" "md5=8ba303dd6a90926f99bb4148bbb6f73c"]
 url {
