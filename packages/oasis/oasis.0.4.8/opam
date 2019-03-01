@@ -56,6 +56,6 @@ extra-files: [
   ["_oasis_remove_.ml" "md5=6100ca146fa97d2196eb49a2631d0796"]
 ]
 url {
-  src: "https://forge-static.ocamlcore.org/frs/download.php/1669/oasis-0.4.8.tar.gz"
+  src: "https://download.ocamlcore.org/oasis/oasis/0.4.8/oasis-0.4.8.tar.gz"
   checksum: "md5=9ba176512a3cc008ec39cd4b528cc4e5"
 }

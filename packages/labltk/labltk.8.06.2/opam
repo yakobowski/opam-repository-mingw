@@ -38,6 +38,6 @@ extra-files: [
 ]
 url {
   src:
-    "https://forge-static.ocamlcore.org/frs/download.php/1628/labltk-8.06.2.tar.gz"
+    "https://download.ocamlcore.org/labltk/labltk/8.06.2/labltk-8.06.2.tar.gz"
   checksum: "md5=15020ef74baa688536ce1d38525462f8"
 }

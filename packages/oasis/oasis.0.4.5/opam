@@ -53,6 +53,6 @@ extra-files: [
   ["oasis.install" "md5=a54d476131759a9059108aadbdbe2f5b"]
 ]
 url {
-  src: "https://forge-static.ocamlcore.org/frs/download.php/1475/oasis-0.4.5.tar.gz"
+  src: "https://download.ocamlcore.org/oasis/oasis/0.4.5/oasis-0.4.5.tar.gz"
   checksum: "md5=c6e319e75f4fd3302e030909714851fe"
 }
