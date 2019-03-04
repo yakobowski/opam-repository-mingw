@@ -1,0 +1,25 @@
+--- ./Makefile
++++ ./Makefile
+@@ -2,6 +2,13 @@
+ 
+ include $(INFOS)
+ 
++OS_TYPE:=$(shell ocamlfind ocamlc -config | tr -d '\015' | awk '/^os_type:/ {print $$2}')
++ifeq ($(OS_TYPE),$(filter $(OS_TYPE),Win32 Cygwin))
++EXT_EXE=.exe
++else
++EXT_EXE=
++endif
++
+ SRC=src
+ DOC=docs
+ MISC=misc
+@@ -80,7 +87,7 @@
+ install: all
+ 	@echo $(BINDIR)
+ 	@mkdir -p $(BINDIR)
+-	@install $(EXE) $(BINDIR)/$(EXE)
++	@install $(EXE) $(BINDIR)/$(EXE)$(EXT_EXE)
+ 
+ uninstall:
+ 	@rm -f $(BINDIR)/$(EXE)
