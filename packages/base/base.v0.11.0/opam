@@ -31,7 +31,7 @@ features such as I/O are not offered by Base. They are instead
 provided by companion libraries such as stdio:
 
   https://github.com/janestreet/stdio"""
-extra-files: ["base-v0.11.0.patch" "md5=209a90503ad45f7d35725c8693370756"]
+extra-files: ["base-v0.11.0.patch" "md5=bcf8a5e5d5dce3949309421d9b38879d"]
 url {
   src:
     "https://ocaml.janestreet.com/ocaml-core/v0.11/files/base-v0.11.0.tar.gz"
