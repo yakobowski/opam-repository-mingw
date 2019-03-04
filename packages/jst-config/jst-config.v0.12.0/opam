@@ -32,3 +32,4 @@ url {
   src: "https://ocaml.janestreet.com/ocaml-core/v0.12/files/jst-config-v0.12.0.tar.gz"
   checksum: "md5=c91b626b2187d29fade6d61d4413c735"
 }
+available: os != "win32"
