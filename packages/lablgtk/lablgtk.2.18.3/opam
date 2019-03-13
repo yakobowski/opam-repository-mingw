@@ -25,7 +25,7 @@ depexts: [
   ["gtk2.0"] {os = "win32" & os-distribution = "cygwinports"}
   ["gtk2-devel"] {os-distribution = "centos"}
   ["gtk2-devel"] {os-distribution = "fedora"}
-  ["gtk2-devel"] {os-distribution = "oraclelinux"}
+  ["gtk2-devel"] {os-distribution = "ol"}
   ["gtk+2.0-dev"] {os-distribution = "alpine"}
   ["gtk2-devel"] {os-family = "suse"}
 ]

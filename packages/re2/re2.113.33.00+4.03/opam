@@ -28,7 +28,7 @@ depends: [
 ]
 depexts: [
   ["gcc-c++"] {os-distribution = "fedora"}
-  ["gcc-c++"] {os-distribution = "oraclelinux"}
+  ["gcc-c++"] {os-distribution = "ol"}
 ]
 patches: [
   "patch-oasis-re2.113.33.00+4.03" {os = "win32"}

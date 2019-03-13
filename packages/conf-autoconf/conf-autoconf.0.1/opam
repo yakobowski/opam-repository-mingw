@@ -21,7 +21,7 @@ depexts: [
   ["autoconf"] {os = "freebsd"}
   ["autoconf"] {os = "netbsd"}
   ["autoconf"] {os-distribution = "alpine"}
-  ["autoconf"] {os-distribution = "oraclelinux"}
+  ["autoconf"] {os-distribution = "ol"}
   ["autoconf"] {os-distribution = "rhel"}
   ["system:autoconf"] {os = "win32" & os-distribution = "cygwinports"}
 ]
