@@ -13,7 +13,7 @@ depexts: [
   ["g++"] {os-distribution = "debian"}
   ["g++"] {os-distribution = "ubuntu"}
   ["gcc"] {os-distribution = "nixos"}
-  ["gcc"] {os-distribution = "archlinux"}
+  ["gcc"] {os-distribution = "arch"}
   ["gcc"] {os = "macos" & os-distribution = "homebrew"}
   ["gcc-g++"] {os = "win32" & os-distribution = "cygwinports"}
 ]

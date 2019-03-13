@@ -14,7 +14,7 @@ depexts: [
   ["zlib-devel"] {os-distribution = "fedora"}
   ["zlib"] {os-distribution = "nixos"}
   ["lzlib"] {os-distribution = "homebrew" & os = "macos"}
-  ["zlib"] {os-distribution = "archlinux"}
+  ["zlib"] {os-distribution = "arch"}
   ["zlib"] {os = "win32" & os-distribution = "cygwinports"}
 ]
 synopsis: "Virtual package relying on zlib"

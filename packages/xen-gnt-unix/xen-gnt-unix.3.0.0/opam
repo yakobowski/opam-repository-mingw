@@ -23,7 +23,7 @@ depexts: [
   ["libxen-dev"] {os-distribution = "ubuntu"}
   ["xen-devel"] {os-distribution = "centos"}
   ["xen-devel"] {os-distribution = "fedora"}
-  ["xenstore"] {os-distribution = "archlinux"}
+  ["xenstore"] {os-distribution = "arch"}
 ]
 available: os != "win32"
 synopsis: "Xen grant table bindings"

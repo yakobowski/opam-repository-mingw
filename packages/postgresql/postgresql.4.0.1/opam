@@ -49,7 +49,7 @@ depexts: [
   ["libpq-dev"] {os-distribution = "ubuntu"}
   ["postgresql-devel"] {os-distribution = "fedora"}
   ["postgresql"] {os = "win32" & os-distribution = "cygwinports"}
-  ["postgresql-libs"] {os-distribution = "archlinux"}
+  ["postgresql-libs"] {os-distribution = "arch"}
   ["postgresql-dev"] {os-distribution = "alpine"}
   ["postgresql-devel"] {os-distribution = "centos"}
   ["postgresql"] {os-distribution = "gentoo"}

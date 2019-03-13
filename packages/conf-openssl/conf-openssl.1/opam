@@ -20,7 +20,7 @@ depexts: [
   ["openssl"] {os = "macos" & os-distribution = "macports"}
   ["libressl-dev"] {os-distribution = "alpine"}
   ["openssl"] {os-distribution = "nixos"}
-  ["openssl"] {os-distribution = "archlinux"}
+  ["openssl"] {os-distribution = "arch"}
   ["openssl"] {os = "win32" & os-distribution = "cygwinports"}
   ["libopenssl-devel"] {os-family = "suse"}
 ]
