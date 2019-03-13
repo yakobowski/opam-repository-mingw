@@ -25,7 +25,11 @@ build: [
   [
     "sh" "-exc"
     "cd tools/ocp-pp && %{ocaml:native?ocamlopt:ocamlc}% -I +compiler-libs ocamlcommon.%{ocaml:native?cmxa:cma}% ocpp_version.ml versioning.mli versioning.ml ocpp_types.ml ocpp_parser.mli ocpp_parser.ml ocpp.ml main.ml -o ocp-pp"
-  ]
+  ] { os != "win32" }
+  [
+    "sh" "-exc"
+    "cd tools/ocp-pp && %{ocaml:native?ocamlopt:ocamlc}% -I +compiler-libs ocamlcommon.%{ocaml:native?cmxa:cma}% ocpp_version.ml versioning.mli versioning.ml ocpp_types.ml ocpp_parser.mli ocpp_parser.ml ocpp.ml main.ml -o ocp-pp.exe"
+  ] { os = "win32" }
 ]
 install: ["cp" "tools/ocp-pp/ocp-pp" bin]
 synopsis: "A simple preprocessor for OCaml"
