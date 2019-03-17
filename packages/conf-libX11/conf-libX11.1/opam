@@ -20,3 +20,4 @@ synopsis: "Virtual package relying on an Xlib system installation"
 description:
   "This package can only install if Xlib (libX11) is installed on the system."
 extra-files: ["pkg-osx.sh" "md5=af634765ff5d52ee1b858b679f0e5c28"]
+available: os != "win32"
