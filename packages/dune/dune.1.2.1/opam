@@ -35,7 +35,7 @@ several opam roots/switches simultaneously. This helps maintaining
 packages across several versions of OCaml and gives cross-compilation
 for free."""
 depends: [
-  "ocaml" {>= "4.02.3"}
+  "ocaml" {>= "4.02.3" & < "4.08.0"}
 ]
 extra-files: ["dune-1.2.1.patch" "md5=bbc3ed1046fd405f7b859e9bdc05564e"]
 url {

@@ -11,7 +11,7 @@ build: [
   ["./boot.exe" "-j" jobs]
 ]
 depends: [
-  "ocaml" {>= "4.02.3"}
+  "ocaml" {>= "4.02.3" & < "4.08.0"}
   "ocamlfind" {build}
 ]
 patches: "jbuilder-1.0+beta9.patch" {os = "win32"}

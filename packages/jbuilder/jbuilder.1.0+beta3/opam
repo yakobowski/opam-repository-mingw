@@ -29,7 +29,7 @@ several opam roots/switches simultaneously. This helps maintaining
 packages across several versions of OCaml and gives cross-compilation
 for free."""
 depends: [
-  "ocaml" {>= "4.02.3"}
+  "ocaml" {>= "4.02.3" & < "4.08.0"}
 ]
 extra-files: [
   "jbuilder-1.0-beta3.patch" "md5=3dd2c271a1f631f3f6fcebc05d9d52cd"
