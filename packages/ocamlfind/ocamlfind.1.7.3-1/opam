@@ -8,6 +8,7 @@ patches: [
   "check-num-in-sitelib.patch"
   "threads.patch"
   "findlib-1.7.3.patch" {os = "win32"}
+  "no-awk-check.patch"
 ]
 build: [
   [
@@ -60,6 +61,7 @@ extra-files: [
   ["ocaml-stub" "md5=181f259c9e0bad9ef523e7d4abfdf87a"]
   ["findlib-1.7.3.patch" "md5=d5c7d0beba415a030614ef3f98dfeda7"]
   ["check-num-in-sitelib.patch" "md5=0ced9df5a3235cc6dbf0bb41b180e72d"]
+  ["no-awk-check.patch" "md5=0378123bf1a45fccdea434c053ddb687"]
 ]
 url {
   src: "http://download.camlcity.org/download/findlib-1.7.3.tar.gz"

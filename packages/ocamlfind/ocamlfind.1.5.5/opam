@@ -3,6 +3,7 @@ maintainer:   "Thomas Gazagnaire <thomas@gazagnaire.org>"
 homepage:     "http://projects.camlcity.org/projects/findlib.html"
 bug-reports:  "mailto:gerd@gerd-stolpmann.de"
 dev-repo: "git+https://github.com/whitequark/ocaml-findlib.git"
+patches: ["no-awk-check.patch" "findlib-1.5.5.patch" {os = "win32"}]
 build: [
   [
     "./configure"
@@ -41,7 +42,6 @@ depends: [
   "conf-m4" {build}
   "num" {= "0"}
 ]
-patches: "findlib-1.5.5.patch" {os = "win32"}
 synopsis: "A library manager for OCaml"
 description: """
 Findlib is a library manager for OCaml. It provides a convention how
@@ -53,6 +53,7 @@ authors: "Gerd Stolpmann <gerd@gerd-stolpmann.de>"
 extra-files: [
   ["ocamlfind.install" "md5=06f2c282ab52d93aa6adeeadd82a2543"]
   ["findlib-1.5.5.patch" "md5=fdb2841e59a9de098056b4fb2e0d0d9b"]
+  ["no-awk-check.patch" "md5=0378123bf1a45fccdea434c053ddb687"]
 ]
 url {
   src: "http://download.camlcity.org/download/findlib-1.5.5.tar.gz"
