@@ -27,4 +27,4 @@ extra-files: [
   ["test-unix.c" "md5=eded6f4b460a7dac86cfa150ed197df0"]
 ]
 flags: conf
-
+available: os != "win32"
