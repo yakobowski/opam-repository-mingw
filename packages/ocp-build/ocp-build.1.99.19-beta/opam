@@ -40,7 +40,7 @@ remove: [
 ]
 conflicts: [ "typerex"  {< "1.99.7"} "typerex-build" ]
 depends: [
-  "ocaml" {>= "3.12.1"}
+  "ocaml" {>= "3.12.1" & < "4.08.0"}
   "ocamlfind"
 ]
 patches: "ocp-build-1.99.19-beta.patch" {os = "win32"}
