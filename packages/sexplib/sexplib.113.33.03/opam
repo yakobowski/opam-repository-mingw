@@ -17,6 +17,8 @@ depends: [
   "ocamlfind" {build & >= "1.5.1"}
   "js-build-tools" {build & >= "113.33.04" & < "113.34.00"}
 ]
+
+conflicts: ["sexplib0"]
 patches: [
   "opamingw.patch" {os = "win32"}
   "patch-oasis-sexplib.113.33.03" {os = "win32"}
