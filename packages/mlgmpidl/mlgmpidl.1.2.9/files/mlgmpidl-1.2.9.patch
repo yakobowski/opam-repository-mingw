@@ -1,0 +1,20 @@
+--- ./Makefile
++++ ./Makefile
+@@ -251,6 +251,8 @@
+ # IDL
+ #-----------------------------------
+ 
++CPP:=$(shell ocamlfind ocamlc -config | awk -F '[\t\r ]+' '/^ranlib:/ {print $$2}' | sed 's|ranlib|cpp|g')
++
+ $(IDLMODULES:%=%.mli): %.mli: %.ml
+ $(IDLMODULES:%=%_caml.c): %_caml.c: %.ml
+ # Generate for each %.idl: %i.ml, %i.mli, %_caml.c
+@@ -258,7 +260,7 @@
+ 	tmpdir=$$(mktemp -d tmp.XXXXXX);				\
+ 	trap "rm -rf $${tmpdir};" EXIT QUIT INT;			\
+ 	{ cp $*.idl $${tmpdir}/$*.idl;					\
+-	  $(CAMLIDL) -no-include -prepro cpp $${tmpdir}/$*.idl;		\
++	  $(CAMLIDL) -no-include -prepro "$(CPP)" $${tmpdir}/$*.idl;		\
+ 	  $(PERL) perlscript_c.pl < $${tmpdir}/$*_stubs.c >$*_caml.c;	\
+ 	  $(PERL) perlscript_caml.pl < $${tmpdir}/$*.ml >$*.ml;		\
+ 	  $(PERL) perlscript_caml.pl < $${tmpdir}/$*.mli >$*.mli; }
