@@ -17,6 +17,7 @@ depexts: [
   ["postgresql-devel"] {os-distribution = "fedora"}
   ["postgresql-devel"] {os-family = "suse"}
   ["postgresql-dev"] {os-distribution = "alpine"}
+  ["postgresql"] {os = "win32" & os-distribution = "cygwinports"}
   ["postgresql"] {os = "macos" & os-distribution = "homebrew"}
   ["postgresql96"] {os = "macos" & os-distribution = "macports"}
 ]
