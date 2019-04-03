@@ -1,0 +1,118 @@
+diff --git a/configure b/configure
+index 62e7a9e..dab9a1f 100755
+--- a/configure
++++ b/configure
+@@ -211,13 +211,32 @@ if test -n "$CC"; then
+   searchbinreq "$CC"
+   cc="$CC"
+   ccopt="$CFLAGS"
+-elif ! searchbin 'gcc'; then
++else
++    cc=
++    case "$system_help" in
++        *mingw64*)
++            if which x86_64-w64-mingw32-gcc >/dev/null 2>&1 ; then
++                cc=x86_64-w64-mingw32-gcc
++                ccopt="-O3 -Wall -Wextra $CFLAGS"
++            fi
++            ;;
++        *mingw*)
++            if which i686-w64-mingw32-gcc >/dev/null 2>&1 ; then
++                cc=i686-w64-mingw32-gcc
++                ccopt="-O3 -Wall -Wextra $CFLAGS"
++            fi
++            ;;
++    esac
++    if [ -z "$cc" ]; then
++        if ! searchbin 'gcc'; then
+   cc='gcc'
+   ccopt="-O3 -Wall -Wextra $CFLAGS"
+-else
++        else
+   searchbinreq 'cc'
+   cc='cc'
+   ccopt="-O3 -Wall -Wextra $CFLAGS"
++        fi
++    fi
+ fi
+ 
+ # optional native-code generation
+@@ -241,7 +260,7 @@ fi
+ 
+ # directories
+ 
+-if test "$ocamllibdir" = "auto"; then ocamllibdir=`ocamlc -where`; fi
++if test "$ocamllibdir" = "auto"; then ocamllibdir=`ocamlc -where | tr -d '\r'`; fi
+ 
+ # fails on Cygwin:
+ # if test ! -f "$ocamllibdir/caml/mlvalues.h"
+@@ -268,7 +287,7 @@ searchbin ocamlfind
+ if test $? -eq 1 -a $ocamlfind != "no"; then 
+     instmeth='findlib'
+     if test "$installdir" = "auto"
+-    then installdir=`ocamlfind printconf destdir`; fi
++    then installdir=`ocamlfind printconf destdir | tr -d '\r'`; fi
+ else
+     searchbin install
+     if test $? -eq 1; then instmeth='install'
+@@ -305,7 +324,7 @@ case $host in
+     i486-*linux-gnu|i686-*linux-gnu|i486-kfreebsd-gnu)
+         ccdef="-DZ_ELF -DZ_DOT_LABEL_PREFIX $ccdef"
+         arch='i686';;
+-    i686-*cygwin)
++    i686-*cygwin|x86_64-*cygwin)
+         if test "x$wordsize" = "x64"; then
+             ccdef="-DZ_COFF $ccdef"
+             arch='x86_64_mingw64'
+@@ -412,6 +431,20 @@ case "$ocamlver" in
+     ;;
+ esac
+ 
++exec_suffix=''
++so_suffix='.so'
++systype=`uname -s`
++case "$systype" in
++    CYGWIN*)
++        exec_suffix='.exe'
++        so_suffix='.dll'
++        ;;
++    MINGW*)
++        exec_suffix='.exe'
++        so_suffix='.dll'
++        ;;
++esac
++
+ # dump Makefile
+ 
+ cat > Makefile <<EOF
+@@ -424,6 +457,8 @@ OCAMLDEP=$ocamldep
+ OCAMLMKLIB=$ocamlmklib
+ OCAMLDOC=$ocamldoc
+ OCAMLFLAGS=$mlflags
++EXEC_SUFFIX=$exec_suffix
++DLL_SUFFIX=$so_suffix
+ OCAMLOPTFLAGS=$mloptflags
+ OCAMLINC=$mlinc
+ CFLAGS=$ccinc $ccdef $ccopt
+diff --git a/project.mak b/project.mak
+index 41f192b..1a7c5cb 100644
+--- a/project.mak
++++ b/project.mak
+@@ -10,7 +10,7 @@
+ # ENS (École normale supérieure, Paris, France),
+ # INRIA Rocquencourt (Institut national de recherche en informatique, France).
+ 
+-ifeq "$(shell $(OCAMLC) -config |grep ccomp_type)" "ccomp_type: msvc"
++ifeq "$(shell $(OCAMLC) -config | tr -d '\015' | grep ccomp_type)" "ccomp_type: msvc"
+ OBJSUFFIX    := obj
+ LIBSUFFIX    := lib
+ DLLSUFFIX    := dll
+@@ -18,7 +18,7 @@ EXE          := .exe
+ else
+ OBJSUFFIX    := o
+ LIBSUFFIX    := a
+-ifeq "$(findstring mingw,$(shell $(OCAMLC) -config |grep system))" "mingw"
++ifeq "$(findstring mingw,$(shell $(OCAMLC) -config | tr -d '\015' | grep system))" "mingw"
+ DLLSUFFIX    := dll
+ EXE          := .exe
+ else
