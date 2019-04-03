@@ -45,7 +45,6 @@ the definition of domain-specific extensions of the syntax of OCaml.
 Camlp4 was part of the official OCaml distribution until its version 4.01.0.
 Since then it has been replaced by a simpler system which is easier to maintain
 and to learn: ppx rewriters and extension points."""
-conflicts: ["ocaml-system"]
 flags: light-uninstall
 extra-files: ["camlp4-4.07-1.patch" "md5=483fcba99de1e6b231dac8a9487a3397"]
 url {
