@@ -7,7 +7,7 @@ dev-repo: "git+https://github.com/janestreet/jbuilder.git"
 license: "Apache-2.0"
 build: [
   ["ocaml" "bootstrap.ml"]
-  ["./boot.exe" "-j" jobs]
+  ["./boot.exe" "-j" "1"]
 ]
 patches: "jbuilder-1.0-beta3.patch" {os = "win32"}
 synopsis: "Fast, portable and opinionated build system"
