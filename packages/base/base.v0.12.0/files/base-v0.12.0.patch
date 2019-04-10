@@ -12,48 +12,30 @@
  (ocamllex hex_lexer)
 --- ./src/int_math_stubs.c
 +++ ./src/int_math_stubs.c
-@@ -28,6 +28,44 @@
+@@ -12,17 +12,24 @@
+ #define __builtin_popcountll __popcnt64
+ #define __builtin_popcount   __popcnt
  
- #endif
+-static uint32_t __inline __builtin_clz(uint32_t x)
++static int __inline __builtin_clz(uint32_t x)
+ {
+   int r = 0;
+   _BitScanForward(&r, x);
+   return r;
+ }
  
-+#if defined(_MSC_VER)
-+#include <intrin.h>
-+#ifdef ARCH_SIXTYFOUR
-+#define __builtin_popcountll(x) __popcnt64((uint64_t)(x))
-+static __inline uint32_t __builtin_clzll(uint64_t value) {
-+  uint32_t leading_zero = 0;
-+  _BitScanReverse64(&leading_zero, value);
-+  return (63 - leading_zero);
-+}
+-static uint64_t __inline __builtin_clzll(uint64_t x)
++static int __inline __builtin_clzll(uint64_t x)
+ {
+   int r = 0;
++#ifdef _WIN64
+   _BitScanForward64(&r, x);
 +#else
-+#define __builtin_popcount(x) __popcnt((unsigned int)(x))
-+static __inline uint32_t __builtin_clz(uint32_t value) {
-+  uint32_t leading_zero = 0;
-+  _BitScanReverse(&leading_zero, value);
-+  return (31 - leading_zero);
-+}
-+#endif /* ARCH_SIXTYFOUR */
-+#endif /* defined(_MSC_VER) */
-+
-+#if defined(_MSC_VER)
-+#include <intrin.h>
-+#ifdef ARCH_SIXTYFOUR
-+#define __builtin_popcountll(x) __popcnt64((uint64_t)(x))
-+static __inline uint32_t __builtin_clzll(uint64_t value) {
-+  uint32_t leading_zero = 0;
-+  _BitScanReverse64(&leading_zero, value);
-+  return (63 - leading_zero);
-+}
-+#else
-+#define __builtin_popcount(x) __popcnt((unsigned int)(x))
-+static __inline uint32_t __builtin_clz(uint32_t value) {
-+  uint32_t leading_zero = 0;
-+  _BitScanReverse(&leading_zero, value);
-+  return (31 - leading_zero);
-+}
-+#endif /* ARCH_SIXTYFOUR */
-+#endif /* defined(_MSC_VER) */
-+
- static int64_t int_pow(int64_t base, int64_t exponent) {
-   int64_t ret = 1;
-   int64_t mul[4];
++  if (!_BitScanForward(&r, (uint32_t)x) &&
++      _BitScanForward(&r, (uint32_t)(x>>32))) {
++    r += 32;
++  }
++#endif
+   return r;
+ }
+ 
