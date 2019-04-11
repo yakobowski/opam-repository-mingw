@@ -23,6 +23,7 @@ depends: [
   "mirage-types"
   "ipaddr"
   "astring"
+  "ounit"
 ]
 synopsis: "Library for reading MirageOS unikernel boot parameters in Xen"
 description: """
