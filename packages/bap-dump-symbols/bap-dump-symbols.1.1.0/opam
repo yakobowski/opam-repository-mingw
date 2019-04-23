@@ -19,7 +19,11 @@ remove: [
         ["bapbundle" "remove" "dump_symbols.plugin"]
 ]
 
-depends: ["ocaml" "bap-std" "cmdliner"]
+depends: [
+  "ocaml"
+  "bap-std" {= "1.1.0"}
+  "cmdliner"
+]
 available: os != "win32"
 synopsis: "BAP plugin that dumps symbols information from a binary"
 url {

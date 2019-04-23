@@ -14,7 +14,11 @@ build: [
 install: [[make "install"]]
 remove: [["ocamlfind" "remove" "bap-plugin-taint"]
          ["bapbundle" "remove" "taint.plugin"]]
-depends: ["ocaml" "bap-std" "cmdliner"]
+depends: [
+  "ocaml"
+  "bap-std" {= "1.1.0"}
+  "cmdliner"
+]
 available: os != "win32"
 synopsis: "Introduce taint into a program"
 url {
