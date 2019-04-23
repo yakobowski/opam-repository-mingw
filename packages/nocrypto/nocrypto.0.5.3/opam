@@ -45,7 +45,10 @@ conflicts: [
 
 tags: [ "org:mirage" ]
 authors: "David Kaloper <david@numm.org>"
-patches: "ocaml-nocrypto-0.5.3.patch" {os = "win32"}
+patches: [
+ "ocaml-nocrypto-0.5.3.patch" {os = "win32"}
+ "werror.patch"
+]
 synopsis: "Small functional-style crypto library."
 description: """
 Ciphers: AES, 3DES, RC4.
@@ -54,7 +57,8 @@ Pubkey: RSA, DH, DSA.
 Rng: Fortuna."""
 flags: light-uninstall
 extra-files: [
-  "ocaml-nocrypto-0.5.3.patch" "md5=69564e5b0184834cc900bc4906cf1dc7"
+  ["ocaml-nocrypto-0.5.3.patch" "md5=69564e5b0184834cc900bc4906cf1dc7"]
+  ["werror.patch" "md5=2e521fc478cdc76779cdd70b909555f1"]
 ]
 url {
   src: "https://github.com/mirleft/ocaml-nocrypto/archive/v0.5.3.tar.gz"
