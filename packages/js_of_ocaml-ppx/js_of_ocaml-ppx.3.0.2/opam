@@ -21,6 +21,7 @@ depopts: ["ppx_deriving" "ppx_tools"]
 conflicts: [
   "ppx_tools_versioned"     {<="5.0beta0"}
   "ppx_deriving"            {<="4.2.0"}
+  "ppx_deriving"            {>="4.3.0"}
 ]
 
 patches: "js_of_ocaml-3.0.2.patch" {os = "win32"}
