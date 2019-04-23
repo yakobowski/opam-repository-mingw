@@ -28,6 +28,8 @@ depends: [
 ]
 depopts: ["js_of_ocaml" "xmldiff" "websocket" "ojs-base" "cryptokit"]
 available: os != "win32"
+conflicts: [
+  "js_of_ocaml" {>= "3.4.0"} ]
 synopsis:
   "A static web site compiler, handling blog posts, or XML document in general."
 description: """
