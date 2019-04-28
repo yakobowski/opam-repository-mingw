@@ -1,0 +1,122 @@
+--- ./emacs/emacs.ml
++++ ./emacs/emacs.ml
+@@ -6,6 +6,47 @@
+ 
+ let check () = has_command "emacs"
+ 
++let slashify =
++  if Sys.os_type <> "Win32" then
++    fun s -> s
++  else
++    fun s ->
++      (* must support OCaml 3.12.1 according the opam file .... *)
++      let len = String.length s in
++      let b = Buffer.create len in
++      for i = 0 to pred len do
++        match String.get s i with
++        | '\\' -> Buffer.add_char b '/'
++        | c -> Buffer.add_char b c
++      done;
++      Buffer.contents b
++
++let cygpath =
++  if Sys.os_type <> "Win32" then
++    fun s -> s
++  else
++    fun s ->
++      try
++        let cmd = "cygpath " ^ Filename.quote s in
++        let ch = Unix.open_process_in cmd in
++        let b_len = String.length s + 4096 in
++        let b = Buffer.create b_len in
++        let () =
++          try
++            Buffer.add_channel b ch b_len
++          with
++          | End_of_file -> () in
++        (match Unix.close_process_in ch with
++         | Unix.WEXITED 0 -> ()
++         | Unix.WEXITED _ | Unix.WSTOPPED _ | Unix.WSIGNALED _ ->
++           failwith (Printf.sprintf "command failed: %S\n" cmd));
++        let len = Buffer.length b in
++        if len < 1 then
++          failwith (Printf.sprintf "no output: %S\n" cmd);
++        Buffer.sub b 0 (pred len)
++      with
++      | Unix.Unix_error _ | Sys_error _ -> s
++
+ (*
+  * Generic template for .emacs
+  *)
+@@ -152,7 +193,8 @@
+        (split-string (opam-shell-command-to-string "opam switch list -s --safe") "\n")
+        nil t nil nil default))))
+   (let* ((switch-arg (if (= 0 (length switch)) "" (concat "--switch " switch)))
+-         (command (concat "opam config env --safe --sexp " switch-arg))
++         (cygwin (if (eq system-type 'cygwin) "--cygwin " ""))
++         (command (concat "opam config env --safe --sexp " cygwin switch-arg))
+          (env (opam-shell-command-to-string command)))
+     (when (and env (not (string= env "")))
+       (dolist (var (car (read-from-string env)))
+@@ -163,7 +205,10 @@
+ (opam-update-env nil)
+ 
+ (defvar opam-share
+-  (let ((reply (opam-shell-command-to-string "opam config var share --safe")))
++  (let* ((opam_command "opam config var share --safe")
++         (command_wrapped (if (eq system-type 'cygwin)
++                              (concat "cygpath \"$(" opam_command ")\"") opam_command))
++         (reply (opam-shell-command-to-string command_wrapped)))
+     (when reply (substring reply 0 -1))))
+ 
+ (add-to-list 'load-path (concat opam-share "/emacs/site-lisp"))
+@@ -273,12 +318,14 @@
+       then share_dir / "emacs" / "site-lisp"
+       else share_dir / "tuareg" (* legacy *)
+     in
++    let tuareg_dir = slashify tuareg_dir in
++    let tuareg_dir_cygwin = cygpath tuareg_dir in
+     let contents =
+       Printf.sprintf {elisp|
+ ;; Set to autoload tuareg from its original switch when not found in current
+ ;; switch (don't load tuareg-site-file as it adds unwanted load-paths)
+ (defun opam-tuareg-autoload (fct file doc args)
+-  (let ((load-path (cons "%s" load-path)))
++  (let ((load-path (cons (if (eq system-type 'cygwin) "%s" "%s") load-path)))
+     (load file))
+   (apply fct args))
+ (when (not (member "tuareg" opam-tools-installed))
+@@ -297,7 +344,7 @@
+   (dolist (ext '(".cmo" ".cmx" ".cma" ".cmxa" ".cmxs" ".cmt" ".cmti" ".cmi" ".annot"))
+     (add-to-list 'completion-ignored-extensions ext)))
+ |elisp}
+-        tuareg_dir
++        tuareg_dir_cygwin tuareg_dir
+     in
+     [conf_file, Text (lines_of_string contents)]
+   let files = []
+@@ -310,16 +357,20 @@
+   let chunks =
+     let contents =
+       let el = share_dir / "emacs" / "site-lisp" / "ocp-indent.el" in
++      let el = slashify el in
++      let el_cygwin = cygpath el in
++      let pl = slashify (opam_var "bin" / "ocp-indent") in
++      let pl_cygwin = cygpath pl in
+       Printf.sprintf {elisp|
+ ;; Load ocp-indent from its original switch when not found in current switch
+ (when (not (assoc "ocp-indent" opam-tools-installed))
+-  (autoload 'ocp-setup-indent "%s" "Improved indentation for Tuareg mode")
+-  (autoload 'ocp-indent-caml-mode-setup "%s" "Improved indentation for Caml mode")
++  (autoload 'ocp-setup-indent (if (eq system-type 'cygwin) "%s" "%s") "Improved indentation for Tuareg mode")
++  (autoload 'ocp-indent-caml-mode-setup (if (eq system-type 'cygwin) "%s" "%s") "Improved indentation for Caml mode")
+   (add-hook 'tuareg-mode-hook 'ocp-setup-indent t)
+   (add-hook 'caml-mode-hook 'ocp-indent-caml-mode-setup  t)
+-  (setq ocp-indent-path %S))
++  (setq ocp-indent-path (if (eq system-type 'cygwin) %S %S)))
+ |elisp}
+-        el el (opam_var "bin" / "ocp-indent")
++        el_cygwin el el_cygwin el pl_cygwin pl
+     in
+     [conf_file, Text (lines_of_string contents)]
+   let files = []
