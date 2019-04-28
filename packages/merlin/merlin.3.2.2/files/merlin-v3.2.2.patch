@@ -1,3 +1,14 @@
+--- ./emacs/merlin.el
++++ ./emacs/merlin.el
+@@ -1651,7 +1651,7 @@
+     (when (equal command 'opam)
+       (with-temp-buffer
+         (if (eq (call-process-shell-command
+-                 "opam config var bin" nil (current-buffer) nil) 0)
++                 (if (eq system-type 'cygwin) "cygpath \"$(opam config var bin)\"" "opam config var bin") nil (current-buffer) nil) 0)
+             (progn
+               (setq command (concat
+                              (replace-regexp-in-string "\n$" "" (buffer-string))
 --- ./src/frontend/ocamlmerlin.c
 +++ ./src/frontend/ocamlmerlin.c
 @@ -537,7 +537,7 @@
