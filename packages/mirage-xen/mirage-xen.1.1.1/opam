@@ -15,7 +15,7 @@ depends: [
   "xen-gnt" {>= "0.9.9"}
   "ocamlbuild" {build}
 ]
-available: os = "linux"
+available: false
 install: [make "xen-install" "PREFIX=%{prefix}%"]
 dev-repo: "git://github.com/mirage/mirage-platform"
 synopsis: "MirageOS library for Xen compilation"
