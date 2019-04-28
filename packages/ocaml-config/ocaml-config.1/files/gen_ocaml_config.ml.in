@@ -33,7 +33,8 @@ let () =
     let rec r acc = try r (input_line ic::acc) with End_of_file -> acc in
     let lines = List.rev (r []) in
     close_in ic;
-    String.concat ":" lines
+    let sep = if Sys.os_type = "Win32" then ";" else ":" in
+    String.concat sep lines
   in
   let p fmt = Printf.fprintf oc (fmt ^^ "\n") in
   p "opam-version: \"2.0\"";
@@ -41,7 +42,7 @@ let () =
   p "  native: %%b"
     (Sys.file_exists (ocaml^"opt"^suffix));
   p "  native-tools: %%b"
-    (Sys.file_exists (ocamlc^".opt"^suffix));
+    (Sys.file_exists (ocaml^"c.opt"^suffix));
   p "  native-dynlink: %%b"
     (Sys.file_exists (Filename.concat libdir "dynlink.cmxa"));
   p "  stubsdir: %%S"
