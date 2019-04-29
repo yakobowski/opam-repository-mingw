@@ -15,6 +15,7 @@ build: [
     "--no-java"
     "--no-ocaml-plugins" {os = "freebsd"}
     "--absolute-dylibs" {os = "macos"}
+    "--ext-dll" {os = "win32"} "dll" {os = "win32"}
   ]
   [make "-j%{jobs}%"]
 ]
@@ -38,13 +39,19 @@ depopts: [
 ]
 patches: [
   "docker-workaround.diff" { os = "linux" }
+  "01-patch-8bcec60"
+  "02-patch-1b91216"
+  "03-patch-a42b636"
 ]
 synopsis: "APRON numerical abstract domain library"
 flags: light-uninstall
 extra-files: [
-  "docker-workaround.diff" "md5=949015a9862a3d8ced04b04d42a4a144"
+  ["docker-workaround.diff" "md5=949015a9862a3d8ced04b04d42a4a144"]
+  ["01-patch-8bcec60" "md5=917fbcb9642045e2b864cde084104131"]
+  ["02-patch-1b91216" "md5=7a6df08495ea0198cefd143bd5062fdd"]
+  ["03-patch-a42b636" "md5=de8d4a3bb4ee12c247a5f2e3f6056c39"]
 ]
 url {
-  src: "http://apron.gforge.inria.fr/apron-20160125.tar.gz"
-  checksum: "md5=6bd20a4b4f42c2c467b26dc2b4024e55"
+  src: "https://github.com/antoinemine/apron/archive/import-svn1104.tar.gz"
+  checksum: "md5=1209ae20455fa6ceeb55a53658e59b15"
 }

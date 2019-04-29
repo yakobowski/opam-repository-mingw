@@ -1,0 +1,884 @@
+commit a42b6367b4157db73d3b60880aef7336f306308d
+Author: Boris Yakobowski <yakobowski@adacore.com>
+Date:   Fri Apr 5 14:54:46 2019 +0200
+
+    Specify extension for dynamic libraries
+
+diff --git a/Makefile b/Makefile
+index fab8118..626ff87 100644
+--- a/Makefile
++++ b/Makefile
+@@ -59,7 +59,7 @@ rebuild:
+ OCAMLFIND_PROTO = xxx.cma $(call OCAMLOPT_TARGETS, xxx) libxxx_caml.a	\
+ 		  libxxx_caml_debug.a
+ ifneq ($(HAS_SHARED),)
+-OCAMLFIND_PROTO += dllxxx_caml.so
++OCAMLFIND_PROTO += dllxxx_caml.$(EXT_DLL)
+ endif
+ OCAMLFIND_FILES = \
+ 	$(patsubst %,mlapronidl/%, apron.cmi apron.cmx) \
+@@ -86,7 +86,7 @@ disjunction) \
+ 
+ ifneq ($(HAS_PPL),)
+ OCAMLFIND_FILES += \
+-	$(patsubst %,ppl/%, ppl.idl ppl.mli ppl.cmi ppl.cma ppl.cmx $(call OCAMLOPT_TARGETS, ppl) libap_ppl_caml.a libap_ppl_caml_debug.a dllap_ppl_caml.so) \
++	$(patsubst %,ppl/%, ppl.idl ppl.mli ppl.cmi ppl.cma ppl.cmx $(call OCAMLOPT_TARGETS, ppl) libap_ppl_caml.a libap_ppl_caml_debug.a dllap_ppl_caml.$(EXT_DLL)) \
+ 	$(patsubst %,products/%, polkaGrid.idl polkaGrid.mli polkaGrid.cmi polkaGrid.cmx) \
+ 	$(patsubst %,products/%, $(subst xxx,polkaGrid, $(OCAMLFIND_PROTO)))
+ endif
+diff --git a/apron/Makefile b/apron/Makefile
+index 927d1d6..34684ab 100644
+--- a/apron/Makefile
++++ b/apron/Makefile
+@@ -52,7 +52,7 @@ LDFLAGS += $(MP_LIFLAGS) -lm -lmpfr -lgmp
+ 
+ LIB_FILES = libapron.a libapron_debug.a
+ ifneq ($(HAS_SHARED),)
+-LIB_FILES += libapron.so libapron_debug.so
++LIB_FILES += libapron.$(EXT_DLL) libapron_debug.$(EXT_DLL)
+ endif
+ 
+ all: $(LIB_FILES)
+@@ -69,7 +69,7 @@ dist: $(H_FILES) $(C_FILES) $(CH_FILES_AUX) apron.texi Makefile COPYING README a
+ 
+ clean:
+ 	/bin/rm -f *.aux *.bbl *.blg *.dvi *.log *.toc *.ps *.pdf apron.cps apron.fns apron.info apron.fn apron.ky apron.pg apron.cp apron.tp apron.vr apron.kys apron.pgs apron.tps apron.vrs newpolka.texi box.texi ap_ppl.texi ap_pkgrid.texi apron.info*
+-	/bin/rm -f *.o *.a *.cmi *.cmo *.cmx *.cmx[as] *.cma *.so
++	/bin/rm -f *.o *.a *.cmi *.cmo *.cmx *.cmx[as] *.cma *.$(EXT_DLL)
+ 	/bin/rm -fr html
+ 	/bin/rm -f apron.pdf rationale.pdf
+ 
+@@ -85,8 +85,8 @@ uninstall:
+ 	/bin/rm -f $(H_FILES:%=$(APRON_INCLUDE)/%)
+ 	/bin/rm -f $(APRON_LIB)/libapron.a
+ 	/bin/rm -f $(APRON_LIB)/libapron_debug.a
+-	/bin/rm -f $(APRON_LIB)/libapron.so
+-	/bin/rm -f $(APRON_LIB)/libapron_debug.so
++	/bin/rm -f $(APRON_LIB)/libapron.$(EXT_DLL)
++	/bin/rm -f $(APRON_LIB)/libapron_debug.$(EXT_DLL)
+ 
+ #---------------------------------------
+ # Latex rules
+@@ -140,12 +140,12 @@ libapron_debug.a: $(O_FILES_DEBUG) ../itv/libitv_debug.a
+ 	$(AR) rs $@ $(O_FILES_DEBUG)
+ 	$(RANLIB) $@
+ 
+-libapron.so: $(O_FILES) ../itv/libitv.a
++libapron.$(EXT_DLL): $(O_FILES) ../itv/libitv.a
+ 	$(CC_APRON_DYLIB) $(CFLAGS) -o $@ $(O_FILES) $(patsubst	\
+ 		%,../itv/%,$(filter %.o, $(shell $(AR) t	\
+ 		../itv/libitv.a))) $(LDFLAGS)
+ 
+-libapron_debug.so: $(O_FILES_DEBUG) ../itv/libitv_debug.a
++libapron_debug.$(EXT_DLL): $(O_FILES_DEBUG) ../itv/libitv_debug.a
+ 	$(CC_APRON_DYLIB) $(CFLAGS_DEBUG) -o $@ $(O_FILES_DEBUG)	\
+ 		$(patsubst %,../itv/%,$(filter %.o, $(shell $(AR) t	\
+ 		../itv/libitv_debug.a))) $(LDFLAGS)
+diff --git a/apronxx/Makefile b/apronxx/Makefile
+index 9553e60..37642b8 100644
+--- a/apronxx/Makefile
++++ b/apronxx/Makefile
+@@ -65,11 +65,11 @@ endif
+ 
+ all: libapronxx.a libapronxx_debug.a apronxx_test
+ ifneq ($(HAS_SHARED),)
+-all: libapronxx.so libapronxx_debug.so
++all: libapronxx.$(EXT_DLL) libapronxx_debug.$(EXT_DLL)
+ endif
+ 
+ clean:
+-	/bin/rm -f *.[ao] *.so apronxx_test
++	/bin/rm -f *.[ao] *.$(EXT_DLL) apronxx_test
+ 	/bin/rm -fr *~ \#*\# tmp
+ 
+ distclean: clean
+@@ -92,7 +92,7 @@ dist: $(CCINC) $(CXXSOURCES) apronxx_test.cc apronxx_test_result.txt Makefile CO
+ # IMPLICIT RULES AND DEPENDENCIES
+ #---------------------------------------
+ 
+-.SUFFIXES: .tex .cc .hh .a .o .so
++.SUFFIXES: .tex .cc .hh .a .o .$(EXT_DLL)
+ 
+ #-----------------------------------
+ # C++ part
+@@ -106,10 +106,10 @@ libapronxx_debug.a: $(subst .cc,_debug.o,$(CXXSOURCES))
+ 	$(AR) rcs $@ $^
+ 	$(RANLIB) $@
+ 
+-libapronxx.so: $(subst .cc,.o,$(CXXSOURCES))
++libapronxx.$(EXT_DLL): $(subst .cc,.o,$(CXXSOURCES))
+ 	$(CXX) $(CFLAGS) -shared -o $@ $^ $(LIBS)
+ 
+-libapronxx_debug.so: $(subst .cc,_debug.o,$(CXXSOURCES))
++libapronxx_debug.$(EXT_DLL): $(subst .cc,_debug.o,$(CXXSOURCES))
+ 	$(CXX) $(CFLAGS_DEBUG) -shared -o $@ $^ $(LIBS_DEBUG)
+ 
+ apronxx_test: libapronxx_debug.a apronxx_test_debug.o
+diff --git a/box/Makefile b/box/Makefile
+index 2b323d9..85e3991 100644
+--- a/box/Makefile
++++ b/box/Makefile
+@@ -26,9 +26,9 @@ CCBIN_TO_INSTALL =
+ CCLIB_TO_INSTALL = libboxMPQ.a libboxD.a libboxMPFR.a	\
+ libboxMPQ_debug.a libboxD_debug.a libboxMPFR_debug.a
+ ifneq ($(HAS_SHARED),)
+-  CCLIB_TO_INSTALL := $(CCLIB_TO_INSTALL) libboxMPQ.so libboxD.so	\
+-  libboxMPFR.so libboxMPQ_debug.so libboxD_debug.so			\
+-  libboxMPFR_debug.so
++  CCLIB_TO_INSTALL := $(CCLIB_TO_INSTALL) libboxMPQ.$(EXT_DLL) libboxD.$(EXT_DLL)	\
++  libboxMPFR.$(EXT_DLL) libboxMPQ_debug.$(EXT_DLL) libboxD_debug.$(EXT_DLL)			\
++  libboxMPFR_debug.$(EXT_DLL)
+ endif
+ 
+ ifneq ($(HAS_OCAML),)
+@@ -40,8 +40,8 @@ ifneq ($(HAS_OCAML),)
+     CAML_TO_INSTALL += $(call OCAMLOPT_TARGETS, boxMPQ boxD boxMPFR)
+   endif
+   ifneq ($(HAS_SHARED),)
+-    CAML_TO_INSTALL += dllboxMPQ_caml.so dllboxD_caml.so	\
+-    dllboxMPFR_caml.so
++    CAML_TO_INSTALL += dllboxMPQ_caml.$(EXT_DLL) dllboxD_caml.$(EXT_DLL)	\
++    dllboxMPFR_caml.$(EXT_DLL)
+   endif
+ endif
+ 
+@@ -62,9 +62,9 @@ allMPQ: libboxMPQ.a libboxMPQ_debug.a
+ allD: libboxD.a libboxD_debug.a
+ allMPFR: libboxMPFR.a libboxMPFR_debug.a
+ ifneq ($(HAS_SHARED),)
+-  allMPQ: libboxMPQ.so libboxMPQ_debug.so
+-  allD: libboxD.so libboxD_debug.so
+-  allMPFR: libboxMPFR.so libboxMPFR_debug.so
++  allMPQ: libboxMPQ.$(EXT_DLL) libboxMPQ_debug.$(EXT_DLL)
++  allD: libboxD.$(EXT_DLL) libboxD_debug.$(EXT_DLL)
++  allMPFR: libboxMPFR.$(EXT_DLL) libboxMPFR_debug.$(EXT_DLL)
+ endif
+ 
+ ml: box.mli box.ml box.cmi mlMPQ mlD mlMPFR
+@@ -78,9 +78,9 @@ ifneq ($(HAS_OCAMLOPT),)
+   mlMPFR: $(call OCAMLOPT_TARGETS, boxMPFR)
+ endif
+ ifneq ($(HAS_SHARED),)
+-  mlMPQ: dllboxMPQ_caml.so 
+-  mlD: dllboxD_caml.so
+-  mlMPFR: dllboxMPFR_caml.so
++  mlMPQ: dllboxMPQ_caml.$(EXT_DLL) 
++  mlD: dllboxD_caml.$(EXT_DLL)
++  mlMPFR: dllboxMPFR_caml.$(EXT_DLL)
+ endif
+ 
+ mlexample%.byte: mlexample.ml box%.cma
+@@ -90,7 +90,7 @@ mlexample%.opt: mlexample.ml box%.cmxa
+ 	$(OCAMLOPT) $(OCAMLOPTFLAGS) -I $(MLGMPIDL_LIB) -I $(APRON_LIB) -o $@ bigarray.cmxa gmp.cmxa apron.cmxa box$*.cmxa $<
+ 
+ clean:
+-	/bin/rm -f *.[ao] *.so *.annot *.cm[ioax] *.cmx[as] *.byte *.opt
++	/bin/rm -f *.[ao] *.$(EXT_DLL) *.annot *.cm[ioax] *.cmx[as] *.byte *.opt
+ 	/bin/rm -f *.?.tex *.log *.aux *.bbl *.blg *.toc *.dvi *.ps *.pstex*
+ 	/bin/rm -fr boxpolkarung boxpolkatopg tmp
+ 	/bin/rm -f box.ml box.mli box_caml.c
+@@ -114,7 +114,7 @@ endif
+ uninstall:
+ 	for i in $(CCINC_TO_INSTALL); do /bin/rm -f $(APRON_INCLUDE)/$$i; done
+ 	/bin/rm -f $(APRON_LIB)/libbox*.* $(APRON_LIB)/liboct*_debug.*
+-	/bin/rm -f $(APRON_LIB)/dllbox*.so $(APRON_LIB)/dlloct*_debug.so
++	/bin/rm -f $(APRON_LIB)/dllbox*.$(EXT_DLL) $(APRON_LIB)/dlloct*_debug.$(EXT_DLL)
+ 	/bin/rm -f $(APRON_LIB)/box.mli $(APRON_LIB)/box.ml		\
+ 	           $(APRON_LIB)/box.cm[ix] $(APRON_LIB)/box.idl		\
+ 	           $(APRON_LIB)/box*.cma $(APRON_LIB)/box*.cmx[as]	\
+@@ -130,8 +130,8 @@ dist: $(CCSRC) Makefile perlscript_caml.pl box.texi box.idl box.ml box.mli box_c
+ 
+ .SUFFIXES: .tex .c .h .a .o
+ 
+-.PRECIOUS: libbox%.a libbox%_debug.a libbox%.so libbox%_debug.so
+-.PRECIOUS: libbox%_caml.a libbox%_caml_debug.a dllbox%_caml.so
++.PRECIOUS: libbox%.a libbox%_debug.a libbox%.$(EXT_DLL) libbox%_debug.$(EXT_DLL)
++.PRECIOUS: libbox%_caml.a libbox%_caml_debug.a dllbox%_caml.$(EXT_DLL)
+ .PRECIOUS: %MPQ.o %D.o %MPFR.o
+ .PRECIOUS: %MPQ_debug.o %D_debug.o %MPFR_debug.o
+ .PRECIOUS: %.cmo %.cmx
+@@ -146,9 +146,9 @@ libbox%.a: $(subst .c,%.o,$(CCMODULES:%=%.c))
+ libbox%_debug.a: $(subst .c,%_debug.o,$(CCMODULES:%=%.c))
+ 	$(AR) rcs $@ $^
+ 	$(RANLIB) $@
+-libbox%.so:  $(subst .c,%.o,$(CCMODULES:%=%.c))
++libbox%.$(EXT_DLL):  $(subst .c,%.o,$(CCMODULES:%=%.c))
+ 	$(CC_APRON_DYLIB) $(CFLAGS) -o $@ $^ $(LDFLAGS) $(LIBS)
+-libbox%_debug.so: $(subst .c,%_debug.o,$(CCMODULES:%=%.c))
++libbox%_debug.$(EXT_DLL): $(subst .c,%_debug.o,$(CCMODULES:%=%.c))
+ 	$(CC_APRON_DYLIB) $(CFLAGS_DEBUG) -o $@ $^ $(LDFLAGS) $(LIBS_DEBUG)
+ 
+ %MPQ.o: %.c
+@@ -172,10 +172,10 @@ libbox%_debug.so: $(subst .c,%_debug.o,$(CCMODULES:%=%.c))
+ # OCaml binding
+ #---------------------------------------
+ 
+-dllbox%_caml.so libbox%_caml.a: box_caml.o libbox%.a
++dllbox%_caml.$(EXT_DLL) libbox%_caml.a: box_caml.o libbox%.a
+ 	$(OCAMLMKLIB) -o box$*_caml $< -L. -lbox$* $(LDFLAGS) $(LIBS)
+ 
+-dllbox%_caml_debug.so libbox%_caml_debug.a: box_caml_debug.o libbox%_debug.a
++dllbox%_caml_debug.$(EXT_DLL) libbox%_caml_debug.a: box_caml_debug.o libbox%_debug.a
+ 	$(OCAMLMKLIB) -o box$*_caml_debug $< -L. -lbox$*_debug $(LDFLAGS) $(LIBS_DEBUG)
+ 
+ box_caml.o: box_caml.c
+diff --git a/configure b/configure
+index 0923320..bdb98b9 100755
+--- a/configure
++++ b/configure
+@@ -57,6 +57,7 @@ has_ocamlfind=1
+ has_ocaml_plugins=1
+ has_java=1
+ force_absolute_dylib_install_names=0;
++ext_dll=so
+ while : ; do
+     case "$1" in
+         "") 
+@@ -76,6 +77,9 @@ while : ; do
+         -java-prefix|--java-prefix)
+             java_prefix="$2"
+             shift;;
++	-ext-dll|--ext-dll)
++	    ext_dll="$2"
++	    shift;;
+         -no-cxx|--no-cxx)
+             has_cxx=0
+             has_ppl=0;;
+@@ -518,6 +522,7 @@ detected configuration:
+    optional PPL support         $has_ppl
+ 
+    installation path            $apron_prefix
++   dynamic libraries extension  $ext_dll
+ 
+ EOF
+ 
+@@ -573,6 +578,8 @@ CXX = $cxx
+ CXXFLAGS = -U__STRICT_ANSI__ -DNDEBUG -O3 $cxxflags
+ CXXFLAGS_DEBUG = -U__STRICT_ANSI__ -UNDEBUG -O0 -g $cxxflags
+ 
++EXT_DLL = $ext_dll
++
+ AR = $ar
+ RANLIB = $ranlib
+ SED = $sed
+diff --git a/japron/Makefile b/japron/Makefile
+index 18c8084..f0a30f0 100644
+--- a/japron/Makefile
++++ b/japron/Makefile
+@@ -92,15 +92,15 @@ APRONC     = $(addprefix apron/apron_,$(addsuffix .c,$(APRONMODS)))
+ APRONO     = $(addprefix apron/apron_,$(addsuffix .o,$(APRONMODS)))
+ APRONH     = $(addprefix apron/apron_,$(addsuffix .h,$(APRONMODS)))
+ 
+-GMPALL     = $(GMPCLASS) $(GMPH) libjgmp.so
+-APRONALL   = $(APRONCLASS) $(APRONH) $(APRONO) libjapron.so
++GMPALL     = $(GMPCLASS) $(GMPH) libjgmp.$(EXT_DLL)
++APRONALL   = $(APRONCLASS) $(APRONH) $(APRONO) libjapron.$(EXT_DLL)
+ 
+ 
+ # built and installed in JAVA_PREFIX
+ JAVAINST   = gmp.jar apron.jar
+ 
+ # built and installed in APRON_LIB
+-SOINST     = libjgmp.so libjapron.so
++SOINST     = libjgmp.$(EXT_DLL) libjapron.$(EXT_DLL)
+ 
+ ############################
+ #TARGETS
+@@ -114,7 +114,7 @@ $(GMPCLASS): $(GMPJ)
+ gmp/%.o: gmp/%.c $(GMPH) gmp/jgmp.h
+ 	$(CC) $(CFLAGSN) -c $(IFLAGS) $< -o $@
+ 
+-libjgmp.so: gmp/jgmp.o $(GMPO)
++libjgmp.$(EXT_DLL): gmp/jgmp.o $(GMPO)
+ 	$(CC) $(CFLAGSN) -shared $+ -o $@ $(LFLAGS) $(GMPLIBS)
+ 
+ gmp/gmp_%.h: gmp/%.java
+@@ -132,7 +132,7 @@ $(APRONCLASS): $(APRONJ)
+ apron/%.o: apron/%.c $(APRONH)  gmp/jgmp.h apron/japron.h
+ 	$(CC) $(CFLAGSN) -c $(IFLAGS) -Igmp $< -o $@
+ 
+-libjapron.so: apron/japron.o $(APRONO)
++libjapron.$(EXT_DLL): apron/japron.o $(APRONO)
+ 	$(CC) $(CFLAGSN) -shared $+ -o $@ $(LFLAGS) $(APRONLIBS)
+ 
+ apron/apron_%.h: apron/%.java
+@@ -175,7 +175,7 @@ dist: $(GMPJ) $(APRONJ) $(GMPC) $(APRONC) apron/japron.c apron/japron.h gmp/jgmp
+ 
+ 
+ clean:
+-	rm -f *~ \#* */*~ *.o *.class *.so *.jar */\#* */*.o */*.class */*.so $(GMPH) $(APRONH)
++	rm -f *~ \#* */*~ *.o *.class *.$(EXT_DLL) *.jar */\#* */*.o */*.class */*.$(EXT_DLL) $(GMPH) $(APRONH)
+ 	rm -rf doc
+ 
+ .PHONY: clean doc install unsintall distclean dist
+diff --git a/mlapronidl/Makefile b/mlapronidl/Makefile
+index f1a049a..eb197f0 100644
+--- a/mlapronidl/Makefile
++++ b/mlapronidl/Makefile
+@@ -43,7 +43,7 @@ CCMODULES = apron_caml $(IDLMODULES:%=%_caml)
+ CCSRC = apron_caml.h $(CCMODULES:%=%.c)
+ CCLIB_TOINSTALL = libapron_caml.a libapron_caml_debug.a
+ ifneq ($(HAS_SHARED),)
+-MLLIB_TOINSTALL += dllapron_caml.so
++MLLIB_TOINSTALL += dllapron_caml.$(EXT_DLL)
+ endif
+ CCINC_TOINSTALL = apron_caml.h
+ 
+@@ -61,7 +61,7 @@ all: $(call OCAMLOPT_TARGETS, apron apron.d)
+ endif
+ 
+ ifneq ($(HAS_SHARED),)
+-all: dllapron_caml.so
++all: dllapron_caml.$(EXT_DLL)
+ endif
+ 
+ ifneq ($(OCAMLPACK),)
+@@ -82,7 +82,7 @@ dist: $(IDLMODULES:%=%.idl) $(MLSRC) $(CCSRC) macros.pl apron_caml.c apron_caml.
+ clean:
+ 	/bin/rm -f $(IDLMODULEStex) Apron_lexer.tex Apron_parser.tex Parser.tex
+ 	/bin/rm -f mlapronidl.out mlapronidl.aux mlapronidl.idx mlapronidl.ilg mlapronidl.ind mlapronidl.bbl mlapronidl.blg mlapronidl.dvi mlapronidl.log mlapronidl.toc mlapronidl.ps mlapronidl.pdf
+-	/bin/rm -f *.o *.a *.so *.annot *.cmi *.cmo *.cmx *.cmx[as] *.cma apron_parser.ml apron_parser.mli apron_lexer.ml
++	/bin/rm -f *.o *.a *.$(EXT_DLL) *.annot *.cmi *.cmo *.cmx *.cmx[as] *.cma apron_parser.ml apron_parser.mli apron_lexer.ml
+ 	/bin/rm -fr tmp html
+ 	/bin/rm -f ocamldoc.[cefkimoptv]* ocamldoc.sty apron_ocamldoc.mli
+ 	/bin/rm -f $(IDLMODULES:%=%.ml) $(IDLMODULES:%=%.mli) $(IDLMODULES:%=%_caml.c)
+@@ -93,7 +93,7 @@ distclean: clean
+ uninstall:
+ ifeq ($(OCAMLFIND),)
+ 	/bin/rm -f $(MLLIB_TOINSTALL:%=$(APRON_LIB)/%)
+-	/bin/rm -f $(CCLIB_TOINSTALL:%=$(APRON_LIB)/%) libapron*.so
++	/bin/rm -f $(CCLIB_TOINSTALL:%=$(APRON_LIB)/%) libapron*.$(EXT_DLL)
+ 	/bin/rm -f $(CCINC_TOINSTALL:%=$(APRON_INCLUDE)/%)
+ endif
+ 
+@@ -121,7 +121,7 @@ apron.d.cmxa: apron.d.a
+ apron.d.a: apron.cmx libapron_caml_debug.a
+ 	$(OCAMLMKLIB) -o apron.d -oc apron_caml_debug apron.cmx $(LIBS_DEBUG)
+ 
+-dllapron_caml.so: libapron_caml.a
++dllapron_caml.$(EXT_DLL): libapron_caml.a
+ 
+ libapron_caml.a: $(CCMODULES:%=%.o)
+ 	$(OCAMLMKLIB) $(CCMODULES:%=%.o) $(LDFLAGS) $(LIBS) -o apron_caml
+diff --git a/newpolka/Makefile b/newpolka/Makefile
+index b5c51cd..536f93e 100644
+--- a/newpolka/Makefile
++++ b/newpolka/Makefile
+@@ -41,8 +41,8 @@ libpolkaMPQ.a libpolkaMPQ_debug.a \
+ libpolkaRll.a libpolkaRll_debug.a
+ ifneq ($(HAS_SHARED),)
+ CCLIB_TO_INSTALL += \
+-libpolkaMPQ.so libpolkaMPQ_debug.so \
+-libpolkaRll.so libpolkaRll_debug.so
++libpolkaMPQ.$(EXT_DLL) libpolkaMPQ_debug.$(EXT_DLL) \
++libpolkaRll.$(EXT_DLL) libpolkaRll_debug.$(EXT_DLL)
+ endif
+ 
+ CAML_TO_INSTALL = \
+@@ -56,7 +56,7 @@ CAML_TO_INSTALL += 							\
+ 	$(call OCAMLOPT_TARGETS, $(addprefix polka,MPQ Rll MPQ.d Rll.d))
+ endif
+ ifneq ($(HAS_SHARED),)
+-CAML_TO_INSTALL += dllpolkaMPQ_caml.so dllpolkaRll_caml.so
++CAML_TO_INSTALL += dllpolkaMPQ_caml.$(EXT_DLL) dllpolkaRll_caml.$(EXT_DLL)
+ endif
+ 
+ LIBS = -lapron -lmpfr -lgmp -lm
+@@ -75,8 +75,8 @@ all: allMPQ allRll
+ allMPQ: libpolkaMPQ.a libpolkaMPQ_debug.a
+ allRll: libpolkaRll.a libpolkaRll_debug.a
+ ifneq ($(HAS_SHARED),)
+-allMPQ: libpolkaMPQ.so libpolkaMPQ_debug.so
+-allRll: libpolkaRll.so libpolkaRll_debug.so
++allMPQ: libpolkaMPQ.$(EXT_DLL) libpolkaMPQ_debug.$(EXT_DLL)
++allRll: libpolkaRll.$(EXT_DLL) libpolkaRll_debug.$(EXT_DLL)
+ endif
+ 
+ ml: polka.mli polka.ml polka.cmi mlMPQ mlRll
+@@ -88,8 +88,8 @@ mlMPQ: $(call OCAMLOPT_TARGETS, polkaMPQ polkaMPQ.d)
+ mlRll: $(call OCAMLOPT_TARGETS, polkaRll polkaRll.d)
+ endif
+ ifneq ($(HAS_SHARED),)
+-mlMPQ: dllpolkaMPQ_caml.so
+-mlRll: dllpolkaRll_caml.so
++mlMPQ: dllpolkaMPQ_caml.$(EXT_DLL)
++mlRll: dllpolkaRll_caml.$(EXT_DLL)
+ endif
+ 
+ test0%: test0%_debug.o libpolka%_debug.a
+@@ -105,7 +105,7 @@ mlexample%.opt: mlexample.ml box%.cmxa
+ 	$(OCAMLOPT) $(OCAMLOPTFLAGS) -I $(MLGMPIDL_LIB) -I $(APRON_LIB) -o $@ bigarray.cmxa gmp.cmxa apron.cmxa box$*.cmxa $<
+ 
+ clean:
+-	/bin/rm -f *.[ao] *.so
++	/bin/rm -f *.[ao] *.$(EXT_DLL)
+ 	/bin/rm -f *.?.tex *.log *.aux *.bbl *.blg *.toc *.dvi *.ps *.pstex*
+ 	/bin/rm -f test[01]Il* test[01]MPQ test[01]Il*_debug test[01]MPQ_debug
+ 	/bin/rm -fr *.annot *.cm[ioax] *.cmx[as]
+@@ -130,7 +130,7 @@ endif
+ uninstall:
+ 	for i in $(CCINC_TO_INSTALL); do /bin/rm -f $(APRON_INCLUDE)/$$i; done
+ 	/bin/rm -f $(APRON_LIB)/libpolka*.* $(APRON_LIB)/libpolka*_debug.*
+-	/bin/rm -f $(APRON_LIB)/dllpolka*.so $(APRON_LIB)/dllpolka*_debug.so
++	/bin/rm -f $(APRON_LIB)/dllpolka*.$(EXT_DLL) $(APRON_LIB)/dllpolka*_debug.$(EXT_DLL)
+ ifeq ($(OCAMLFIND),)
+ 	/bin/rm -f $(APRON_LIB)/polka.mli $(APRON_LIB)/polka.ml $(APRON_LIB)/polka.cm[ix] $(APRON_LIB)/polka.idl $(APRON_LIB)/polka*.cma $(APRON_LIB)/polka*.cmx[as] $(APRON_LIB)/polka*.a
+ endif
+@@ -145,8 +145,8 @@ dist: $(CCSRC) Makefile perlscript_caml.pl newpolka.texi polka.idl polka.ml polk
+ 
+ .SUFFIXES: .tex .c .h .a .o
+ 
+-.PRECIOUS: libpolka%.a libpolka%_debug.a libpolka%.so libpolka%_debug.so
+-.PRECIOUS: libpolka%_caml.a libpolka%_caml_debug.a dllpolka%_caml.so
++.PRECIOUS: libpolka%.a libpolka%_debug.a libpolka%.$(EXT_DLL) libpolka%_debug.$(EXT_DLL)
++.PRECIOUS: libpolka%_caml.a libpolka%_caml_debug.a dllpolka%_caml.$(EXT_DLL)
+ .PRECIOUS: %Rl.o %Rll.o %MPQ.o
+ .PRECIOUS: %Rl_debug.o %Rll_debug.o %MPQ_debug.o
+ .PRECIOUS: %.cmo %.cmx
+@@ -164,9 +164,9 @@ libpolka%.a: $(subst .c,%.o,$(CCMODULES:%=%.c))
+ libpolka%_debug.a: $(subst .c,%_debug.o,$(CCMODULES:%=%.c))
+ 	$(AR) rcs $@ $^
+ 	$(RANLIB) $@
+-libpolka%.so:  $(subst .c,%.o,$(CCMODULES:%=%.c))
++libpolka%.$(EXT_DLL):  $(subst .c,%.o,$(CCMODULES:%=%.c))
+ 	$(CC_APRON_DYLIB) $(CFLAGS) -o $@ $^ $(LDFLAGS) $(LIBS)
+-libpolka%_debug.so: $(subst .c,%_debug.o,$(CCMODULES:%=%.c))
++libpolka%_debug.$(EXT_DLL): $(subst .c,%_debug.o,$(CCMODULES:%=%.c))
+ 	$(CC_APRON_DYLIB) $(CFLAGS_DEBUG) -o $@ $^ $(LDFLAGS) $(LIBS_DEBUG)
+ 
+ %Rl.o: %.c $(CCINC)
+@@ -197,7 +197,7 @@ test.cmo: test.ml
+ # OCaml binding
+ #---------------------------------------
+ 
+-dllpolka%_caml.so libpolka%_caml.a: polka_caml.o libpolka%.a
++dllpolka%_caml.$(EXT_DLL) libpolka%_caml.a: polka_caml.o libpolka%.a
+ 	$(OCAMLMKLIB) -o polka$*_caml $< -L. -lpolka$* $(LDFLAGS) $(LIBS)
+ 
+ libpolka%_caml_debug.a: polka_caml_debug.o libpolka%_debug.a
+diff --git a/octagons/Makefile b/octagons/Makefile
+index 2cb6c51..bb85d22 100644
+--- a/octagons/Makefile
++++ b/octagons/Makefile
+@@ -81,15 +81,15 @@ D: liboctD.a liboctD_debug.a octtestD
+ Dl: liboctDl.a liboctDl_debug.a octtestDl
+ MPFR: liboctMPFR.a liboctMPFR_debug.a octtestMPFR
+ ifneq ($(HAS_SHARED),)
+-Il: liboctIl.so liboctIl_debug.so
+-Ill: liboctIll.so liboctIll_debug.so
+-MPZ: liboctMPZ.so liboctMPZ_debug.so
+-Ri: liboctRi.so liboctRi_debug.so
+-Rll: liboctRll.so liboctRll_debug.so
+-MPQ: liboctMPQ.so liboctMPQ_debug.so
+-D: liboctD.so liboctD_debug.so
+-Dl: liboctDl.so liboctDl_debug.so
+-MPFR: liboctMPFR.so liboctMPFR_debug.so
++Il: liboctIl.$(EXT_DLL) liboctIl_debug.$(EXT_DLL)
++Ill: liboctIll.$(EXT_DLL) liboctIll_debug.$(EXT_DLL)
++MPZ: liboctMPZ.$(EXT_DLL) liboctMPZ_debug.$(EXT_DLL)
++Ri: liboctRi.$(EXT_DLL) liboctRi_debug.$(EXT_DLL)
++Rll: liboctRll.$(EXT_DLL) liboctRll_debug.$(EXT_DLL)
++MPQ: liboctMPQ.$(EXT_DLL) liboctMPQ_debug.$(EXT_DLL)
++D: liboctD.$(EXT_DLL) liboctD_debug.$(EXT_DLL)
++Dl: liboctDl.$(EXT_DLL) liboctDl_debug.$(EXT_DLL)
++MPFR: liboctMPFR.$(EXT_DLL) liboctMPFR_debug.$(EXT_DLL)
+ endif
+ 
+ mlexample%.byte: mlexample.ml oct%.cma
+@@ -99,7 +99,7 @@ mlexample%.opt: mlexample.ml oct%.cmxa
+ 	$(OCAMLOPT) $(OCAMLOPTFLAGS) -I $(MLGMPIDL_LIB) -I $(APRON_LIB) -o $@ bigarray.cmxa gmp.cmxa apron.cmxa oct$*.cmxa $<
+ 
+ clean:
+-	/bin/rm -f *.[ao] *.so octtest*
++	/bin/rm -f *.[ao] *.$(EXT_DLL) octtest*
+ 	/bin/rm -f *.?.tex *.log *.aux *.bbl *.blg *.toc *.dvi *.ps *.pstex*
+ 	/bin/rm -fr *.annot *.cm[ioax] *.cmx[as]
+ 	/bin/rm -fr octtop* octrun* tmp
+@@ -120,7 +120,7 @@ install:
+ 		if test -f $$i; then $(INSTALL) $$i $(APRON_LIB); fi; \
+ 	done
+ ifeq ($(OCAMLFIND),)
+-	for i in liboct*_caml.* dlloct*_caml.so; do \
++	for i in liboct*_caml.* dlloct*_caml.$(EXT_DLL); do \
+ 		if test -f $$i; then $(INSTALL) $$i $(APRON_LIB); fi; \
+ 	done
+ 	for i in oct.idl oct.mli oct.cmi oct.cmx oct*.cma oct*.cmxa oct*.a; do \
+@@ -133,7 +133,7 @@ uninstall:
+ 	/bin/rm -fr $(APRON_INCLUDE)/oct
+ 	/bin/rm -f $(APRON_BIN)/octtest* $(APRON_BIN)/octtop* $(APRON_BIN)/octrun*
+ 	/bin/rm -f $(APRON_LIB)/liboct*.* $(APRON_LIB)/liboct*_debug.*
+-	/bin/rm -f $(APRON_LIB)/dlloct*.so $(APRON_LIB)/dlloct*_debug.so
++	/bin/rm -f $(APRON_LIB)/dlloct*.$(EXT_DLL) $(APRON_LIB)/dlloct*_debug.$(EXT_DLL)
+ 	/bin/rm -f $(APRON_LIB)/oct.mli $(APRON_LIB)/oct.cm[ix] $(APRON_LIB)/oct.idl $(APRON_LIB)/oct*.cma $(APRON_LIB)/oct*.cmx[as] $(APRON_LIB)/oct*.a
+ 
+ dist: Makefile COPYING README oct_doc.html perlscript_caml.pl perlscript_c.pl $(CCSOURCES) $(CCINC) oct.h oct_test.c oct.idl oct.mli oct.ml oct_caml.c
+@@ -143,7 +143,7 @@ dist: Makefile COPYING README oct_doc.html perlscript_caml.pl perlscript_c.pl $(
+ # IMPLICIT RULES AND DEPENDENCIES
+ #---------------------------------------
+ 
+-.SUFFIXES: .tex .c .h .a .o .so
++.SUFFIXES: .tex .c .h .a .o .$(EXT_DLL)
+ 
+ #-----------------------------------
+ # C part
+@@ -157,14 +157,14 @@ liboct%_debug.a: $(subst .c,%_debug.o,$(CCSOURCES))
+ 	$(AR) rcs $@ $^
+ 	$(RANLIB) $@
+ 
+-liboct%.so: $(subst .c,%.o,$(CCSOURCES))
++liboct%.$(EXT_DLL): $(subst .c,%.o,$(CCSOURCES))
+ 	$(CC_APRON_DYLIB) $(CFLAGS) -o $@ $^ $(LDFLAGS) $(LIBS)
+ 
+-liboct%_debug.so: $(subst .c,%_debug.o,$(CCSOURCES))
++liboct%_debug.$(EXT_DLL): $(subst .c,%_debug.o,$(CCSOURCES))
+ 	$(CC_APRON_DYLIB) $(CFLAGS) -o $@ $^ $(LDFLAGS) $(LIBS_DEBUG)
+ 
+ ifneq ($(HAS_SHARED),)
+-octtest%: oct_test%.o liboct%_debug.a liboct%_debug.so
++octtest%: oct_test%.o liboct%_debug.a liboct%_debug.$(EXT_DLL)
+ else
+ octtest%: oct_test%.o liboct%_debug.a
+ endif
+@@ -219,8 +219,8 @@ endif
+ 
+ # TODO: mpfr ?
+ 
+-.PRECIOUS: liboct%.a liboct%_debug.a liboct%.so liboct%_debug.so
+-.PRECIOUS: liboct%_caml.a liboct%_caml_debug.a dlloct%_caml.so
++.PRECIOUS: liboct%.a liboct%_debug.a liboct%.$(EXT_DLL) liboct%_debug.$(EXT_DLL)
++.PRECIOUS: liboct%_caml.a liboct%_caml_debug.a dlloct%_caml.$(EXT_DLL)
+ .PRECIOUS: %Il.o %Ill.o %MPZ.o %Ri.o %Rll.o %MPQ.o %D.o %Dl.o %MPFR.o
+ .PRECIOUS: %Il_debug.o %Ill_debug.o %MPZ_debug.o %Ri_debug.o %Rll_debug.o %MPQ_debug.o %D_debug.o %Dl_debug.o %MPFR_debug.o
+ 
+@@ -252,14 +252,14 @@ mlDl: $(call OCAMLOPT_TARGETS, octDl)
+ mlMPFR: $(call OCAMLOPT_TARGETS, octMPFR)
+ endif
+ ifneq ($(HAS_SHARED),)
+-mlIl: dlloctIl_caml.so 
+-mlIll:dlloctIll_caml.so
+-mlMPZ:dlloctMPZ_caml.so 
+-mlRll:dlloctRll_caml.so
+-mlMPQ:dlloctMPQ_caml.so
+-mlD:dlloctD_caml.so
+-mlDl:dlloctDl_caml.so
+-mlMPFR:dlloctMPFR_caml.so
++mlIl: dlloctIl_caml.$(EXT_DLL) 
++mlIll:dlloctIll_caml.$(EXT_DLL)
++mlMPZ:dlloctMPZ_caml.$(EXT_DLL) 
++mlRll:dlloctRll_caml.$(EXT_DLL)
++mlMPQ:dlloctMPQ_caml.$(EXT_DLL)
++mlD:dlloctD_caml.$(EXT_DLL)
++mlDl:dlloctDl_caml.$(EXT_DLL)
++mlMPFR:dlloctMPFR_caml.$(EXT_DLL)
+ endif
+ 
+ #octtop%: oct.cma liboct_caml.a liboct%.a
+@@ -274,10 +274,10 @@ oct%.cma: oct.cmo liboct%_caml.a liboct%.a
+ oct%.cmxa oct%.a: oct.cmx liboct%_caml.a liboct%.a
+ 	$(OCAMLMKLIB) -o oct$* -oc oct$*_caml oct.cmx -loct$* $(LIBS)
+ 
+-dlloct%_caml.so liboct%_caml.a: oct_caml.o liboct%.a
++dlloct%_caml.$(EXT_DLL) liboct%_caml.a: oct_caml.o liboct%.a
+ 	$(OCAMLMKLIB) -o oct$*_caml $< -L. -loct$* $(LDFLAGS) $(LIBS)
+ 
+-dlloct%_caml_debug.so liboct%_caml_debug.a: oct_caml_debug.o liboct%_debug.a
++dlloct%_caml_debug.$(EXT_DLL) liboct%_caml_debug.a: oct_caml_debug.o liboct%_debug.a
+ 	$(OCAMLMKLIB) -o oct$*_caml_debug $< -L. -loct$*_debug $(LDFLAGS) $(LIBS_DEBUG)
+ 
+ %.ml %.mli %_caml.c: %.idl perlscript_c.pl perlscript_caml.pl ../mlapronidl/*.idl
+@@ -291,7 +291,7 @@ dlloct%_caml_debug.so liboct%_caml_debug.a: oct_caml_debug.o liboct%_debug.a
+ rebuild:
+ 	@echo "make rebuild is no longer necessary"
+ 
+-.PRECIOUS: %_caml.c %.ml %.mli %.cmi liboct%_caml.a liboct%_caml_debug.a dlloct%_caml.so oct.cmx oct.cmo
++.PRECIOUS: %_caml.c %.ml %.mli %.cmi liboct%_caml.a liboct%_caml_debug.a dlloct%_caml.$(EXT_DLL) oct.cmx oct.cmo
+ 
+ #---------------------------------------
+ # ML generic rules
+diff --git a/ppl/Makefile b/ppl/Makefile
+index 2af6a73..5cf2a55 100644
+--- a/ppl/Makefile
++++ b/ppl/Makefile
+@@ -44,7 +44,7 @@ LIBS_DEBUG = -lppl -lapron_debug -lgmpxx -lmpfr -lgmp -lm
+ 
+ all: libap_ppl.a libap_ppl_debug.a ap_ppl_test
+ ifneq ($(HAS_SHARED),)
+-all: libap_ppl.so libap_ppl_debug.so
++all: libap_ppl.$(EXT_DLL) libap_ppl_debug.$(EXT_DLL)
+ endif
+ 
+ mlexample.byte: mlexample.ml ppl.cma
+@@ -54,7 +54,7 @@ mlexample.opt: mlexample.ml ppl.cmxa
+ 	$(OCAMLOPT) $(OCAMLOPTFLAGS) $(OCAMLINC) -I ../apron -o $@ bigarray.cmxa gmp.cmxa apron.cmxa ppl.cmxa $<
+ 
+ clean:
+-	/bin/rm -f *.[ao] *.so ap_ppl_test
++	/bin/rm -f *.[ao] *.$(EXT_DLL) ap_ppl_test
+ 	/bin/rm -f *.annot *.cm[ioax] *.cmx[as] pplrun ppltop
+ 	/bin/rm -fr *~ \#*\# tmp
+ 	/bin/rm -f ap_ppl_caml.c ppl.ml ppl.mli
+@@ -64,11 +64,11 @@ distclean: clean
+ install:
+ 	$(INSTALLd) $(APRON_INCLUDE) $(APRON_LIB) $(APRON_BIN)
+ 	$(INSTALL) ap_ppl.h $(APRON_INCLUDE)
+-	for i in libap_ppl.a libap_ppl_debug.a libap_ppl.so libap_ppl_debug.so; do \
++	for i in libap_ppl.a libap_ppl_debug.a libap_ppl.$(EXT_DLL) libap_ppl_debug.$(EXT_DLL); do \
+ 		if test -f $$i; then $(INSTALL) $$i $(APRON_LIB); fi; \
+ 	done
+ ifeq ($(OCAMLFIND),)
+-	for i in libap_ppl_caml*.a dllap_ppl_caml*.so ppl.idl ppl.cmi ppl.cma ppl.cmxa ppl.a; do \
++	for i in libap_ppl_caml*.a dllap_ppl_caml*.$(EXT_DLL) ppl.idl ppl.cmi ppl.cma ppl.cmxa ppl.a; do \
+ 		if test -f $$i; then $(INSTALL) $$i $(APRON_LIB); fi; \
+ 	done
+ 	for i in ap_ppl_test pplrun ppltop; do \
+@@ -92,7 +92,7 @@ dist: Makefile COPYING README $(CXXSOURCES) $(CSOURCES) $(CCINC) ppl.idl perlscr
+ # IMPLICIT RULES AND DEPENDENCIES
+ #---------------------------------------
+ 
+-.SUFFIXES: .tex .cc .h .a .o .so
++.SUFFIXES: .tex .cc .h .a .o .$(EXT_DLL)
+ 
+ #-----------------------------------
+ # C / C++ part
+@@ -104,15 +104,15 @@ libap_ppl.a: $(subst .cc,.o,$(CXXSOURCES))
+ libap_ppl_debug.a: $(subst .cc,_debug.o,$(CXXSOURCES))
+ 	$(AR) rcs $@ $^
+ 	$(RANLIB) $@
+-libap_ppl.so: $(subst .cc,.o,$(CXXSOURCES))
++libap_ppl.$(EXT_DLL): $(subst .cc,.o,$(CXXSOURCES))
+ 	$(CXX_APRON_DYLIB) $(CXXFLAGS) -o $@ $^ $(LDFLAGS) $(LIBS)
+-libap_ppl_debug.so: $(subst .cc,_debug.o,$(CXXSOURCES))
++libap_ppl_debug.$(EXT_DLL): $(subst .cc,_debug.o,$(CXXSOURCES))
+ 	$(CXX_APRON_DYLIB) $(CXXFLAGS_DEBUG) -o $@ $^ $(LDFLAGS) $(LIBS_DEBUG)
+ 
+ ifneq ($(HAS_SHARED),)
+-ap_ppl_test: libap_ppl_debug.so
++ap_ppl_test: libap_ppl_debug.$(EXT_DLL)
+ endif
+-ap_ppl_test: libap_ppl_debug.a libap_ppl_debug.so ppl_test_debug.o
++ap_ppl_test: libap_ppl_debug.a libap_ppl_debug.$(EXT_DLL) ppl_test_debug.o
+ 	$(CXX) $(CXXFLAGS) -o $@ ppl_test_debug.o \
+ 		-L. -lap_ppl_debug -L../newpolka -lpolkaMPQ_debug \
+ 		$(LDFLAGS) $(LIBS_DEBUG)
+@@ -140,7 +140,7 @@ ml: $(call OCAMLOPT_TARGETS, ppl)
+ endif
+ 
+ ifneq ($(HAS_SHARED),)
+-ml: dllap_ppl_caml.so
++ml: dllap_ppl_caml.$(EXT_DLL)
+ endif
+ 
+ #ppltop: ppl.cma libap_ppl_caml.a libap_ppl.a
+@@ -153,11 +153,11 @@ endif
+ #	bigarray.cma gmp.cma apron.cma ppl.cma \
+ #	-ccopt "-L.  -L../apron -L../itv -L$(MLGMPIDL_PREFIX)/lib -L../mlapronidl"
+ 
+-dllap_ppl_caml.so: libap_ppl_caml.a
++dllap_ppl_caml.$(EXT_DLL): libap_ppl_caml.a
+ libap_ppl_caml.a: ap_ppl_caml.o libap_ppl.a
+ 	$(OCAMLMKLIB) -o ap_ppl_caml $< -L. -lap_ppl $(LDFLAGS) $(LIBS)
+ 
+-dllap_ppl_caml_debug.so: libap_ppl_caml_debug.a
++dllap_ppl_caml_debug.$(EXT_DLL): libap_ppl_caml_debug.a
+ libap_ppl_caml_debug.a: ap_ppl_caml_debug.o libap_ppl_debug.a
+ 	$(OCAMLMKLIB) -o ap_ppl_caml_debug $< -L. -lap_ppl_debug $(LDFLAGS) $(LIBS_DEBUG)
+ 
+@@ -185,7 +185,7 @@ rebuild:
+ 	@echo "make rebuild is no longer necessary"
+ 
+ 
+-.PRECIOUS: %_caml.c %.ml %.mli %.cmi libap_ppl_caml.a dllap_ppl_caml.so ppl.cmx ppl.cmo
++.PRECIOUS: %_caml.c %.ml %.mli %.cmi libap_ppl_caml.a dllap_ppl_caml.$(EXT_DLL) ppl.cmx ppl.cmo
+ 
+ 
+ #---------------------------------------
+diff --git a/products/Makefile b/products/Makefile
+index 93ee313..0c5a808 100644
+--- a/products/Makefile
++++ b/products/Makefile
+@@ -30,7 +30,7 @@ CCINC_TO_INSTALL = ap_pkgrid.h
+ CCBIN_TO_INSTALL =
+ CCLIB_TO_INSTALL = libap_pkgrid.a libap_pkgrid_debug.a
+ ifneq ($(HAS_SHARED),)
+-CCLIB_TO_INSTALL += libap_pkgrid.so libap_pkgrid_debug.so
++CCLIB_TO_INSTALL += libap_pkgrid.$(EXT_DLL) libap_pkgrid_debug.$(EXT_DLL)
+ endif
+ 
+ ifneq ($(HAS_OCAML),)
+@@ -43,8 +43,8 @@ ifneq ($(HAS_OCAML),)
+     endif
+   endif
+   ifneq ($(HAS_SHARED),)
+-    CAML_TO_INSTALL += libap_pkgrid.so libap_pkgrid_debug.so	\
+-    dllpolkaGrid_caml.so
++    CAML_TO_INSTALL += libap_pkgrid.$(EXT_DLL) libap_pkgrid_debug.$(EXT_DLL)	\
++    dllpolkaGrid_caml.$(EXT_DLL)
+   endif
+ endif
+ 
+@@ -57,7 +57,7 @@ LIBS_DEBUG = -lap_ppl_debug -lppl -lapron_debug -lgmpxx -lmpfr -lgmp -lm
+ 
+ all: libap_pkgrid.a libap_pkgrid_debug.a 
+ ifneq ($(HAS_SHARED),)
+-all: libap_pkgrid.so libap_pkgrid_debug.so 
++all: libap_pkgrid.$(EXT_DLL) libap_pkgrid_debug.$(EXT_DLL) 
+ endif
+ 
+ ml: polkaGrid.mli polkaGrid.ml polkaGrid.cmi polkaGrid.cma libpolkaGrid_caml.a libpolkaGrid_caml_debug.a 
+@@ -65,7 +65,7 @@ ifneq ($(HAS_OCAMLOPT),)
+ ml: $(call OCAMLOPT_TARGETS, polkaGrid)
+ endif
+ ifneq ($(HAS_SHARED),)
+-ml: dllpolkaGrid_caml.so dllpolkaGrid_caml_debug.so
++ml: dllpolkaGrid_caml.$(EXT_DLL) dllpolkaGrid_caml_debug.$(EXT_DLL)
+ endif
+ 
+ mlexample%.byte: mlexample.ml $(APRON_LIB)/polka%.cma $(APRON_LIB)/ppl.cma polkaGrid.cma
+@@ -75,7 +75,7 @@ mlexample%.opt: mlexample.ml $(APRON_LIB)/polka%.cmxa $(APRON_LIB)/ppl.cmxa polk
+ 	$(OCAMLOPT) $(OCAMLOPTFLAGS) -I $(MLGMPIDL_LIB) -I $(APRON_LIB) -o $@ bigarray.cmxa gmp.cmxa apron.cmxa polka%.cmxa ppl.cmxa polkaGrid.cmxa $<
+ 
+ clean:
+-	/bin/rm -f *.[ao] *.so *.annot *.cm[xiao] *.cmx[as]
++	/bin/rm -f *.[ao] *.$(EXT_DLL) *.annot *.cm[xiao] *.cmx[as]
+ 	/bin/rm -f *.?.tex *.log *.aux *.bbl *.blg *.toc *.dvi *.ps *.pstex*
+ 	/bin/rm -fr tmp
+ 	/bin/rm -f polkaGrid.ml polkaGrid.mli polkaGrid_caml.c Makefile.depend
+@@ -97,7 +97,7 @@ endif
+ uninstall:
+ 	for i in $(CCINC_TO_INSTALL); do /bin/rm -f $(APRON_INCLUDE)/$$i; done
+ 	for i in $(CCLIB_TO_INSTALL); do /bin/rm -f $(APRON_LIB)/$$i; done
+-	for i in dllpolkaGrid_caml*.so; do /bin/rm -f $(APRON_LIB)/$$i; done
++	for i in dllpolkaGrid_caml*.$(EXT_DLL); do /bin/rm -f $(APRON_LIB)/$$i; done
+ 	for i in $(CCBIN_TO_INSTALL); do /bin/rm -f $(APRON_BIN)/$$i; done
+ 
+ dist: $(CCSRC) ap_pkgrid.texi perlscript_caml.pl polkaGrid.idl polkaGrid.ml polkaGrid.mli polkaGrid_caml.c Makefile COPYING README
+@@ -119,9 +119,9 @@ libap_pkgrid.a: ap_pkgrid.o
+ libap_pkgrid_debug.a: ap_pkgrid_debug.o
+ 	$(AR) rcs $@ $^
+ 	$(RANLIB) $@
+-libap_pkgrid.so: ap_pkgrid.o
++libap_pkgrid.$(EXT_DLL): ap_pkgrid.o
+ 	$(CXX_APRON_DYLIB) $(CXXFLAGS) -o $@ $^ -L../newpolka -lpolkaMPQ $(LDFLAGS) $(LIBS)
+-libap_pkgrid_debug.so: ap_pkgrid_debug.o
++libap_pkgrid_debug.$(EXT_DLL): ap_pkgrid_debug.o
+ 	$(CXX_APRON_DYLIB) $(CXXFLAGS_DEBUG) -o $@ $^ -L../newpolka -lpolkaMPQ_debug $(LDFLAGS) $(LIBS_DEBUG)
+ 
+ #---------------------------------------
+@@ -130,11 +130,11 @@ libap_pkgrid_debug.so: ap_pkgrid_debug.o
+ 
+ OCAMLMKLIB := $(OCAMLMKLIB) -ocamlc "$(OCAMLC) -cc $(CXX)" -ocamlopt "$(OCAMLOPT) -cc $(CXX)"
+ 
+-dllpolkaGrid_caml.so: libpolkaGrid_caml.a
++dllpolkaGrid_caml.$(EXT_DLL): libpolkaGrid_caml.a
+ libpolkaGrid_caml.a: polkaGrid_caml.o libap_pkgrid.a
+ 	$(OCAMLMKLIB) -o polkaGrid_caml $< -L. -lap_pkgrid -L../newpolka -lpolkaMPQ $(LDFLAGS) $(LIBS)
+ 
+-dllpolkaGrid_caml_debug.so: libpolkaGrid_caml_debug.a
++dllpolkaGrid_caml_debug.$(EXT_DLL): libpolkaGrid_caml_debug.a
+ libpolkaGrid_caml_debug.a: polkaGrid_caml_debug.o libap_pkgrid_debug.a
+ 	$(OCAMLMKLIB) -o polkaGrid_caml_debug $< -L. -lap_pkgrid_debug -L../newpolka -lpolkaMPQ_debug $(LDFLAGS) $(LIBS_DEBUG)
+ 
+diff --git a/taylor1plus/Makefile b/taylor1plus/Makefile
+index bef7b98..998023d 100644
+--- a/taylor1plus/Makefile
++++ b/taylor1plus/Makefile
+@@ -35,8 +35,8 @@ libt1pMPQ.a libt1pD.a libt1pMPFR.a \
+ libt1pMPQ_debug.a libt1pD_debug.a libt1pMPFR_debug.a
+ ifneq ($(HAS_SHARED),)
+ CCLIB_TO_INSTALL := $(CCLIB_TO_INSTALL) \
+-libt1pMPQ.so libt1pD.so libt1pMPFR.so \
+-libt1pMPQ_debug.so libt1pD_debug.so libt1pMPFR_debug.so
++libt1pMPQ.$(EXT_DLL) libt1pD.$(EXT_DLL) libt1pMPFR.$(EXT_DLL) \
++libt1pMPQ_debug.$(EXT_DLL) libt1pD_debug.$(EXT_DLL) libt1pMPFR_debug.$(EXT_DLL)
+ endif
+ 
+ ifneq ($(HAS_OCAML),)
+@@ -51,7 +51,7 @@ ifneq ($(HAS_OCAMLOPT),)
+   CAML_TO_INSTALL += $(call OCAMLOPT_TARGETS, t1pMPQ t1pD t1pMPFR)
+ endif
+ ifneq ($(HAS_SHARED),)
+-CAML_TO_INSTALL += dllt1pMPQ_caml.so dllt1pD_caml.so dllt1pMPFR_caml.so dllt1pMPQ_caml_debug.so dllt1pD_caml_debug.so dllt1pMPFR_caml_debug.so
++CAML_TO_INSTALL += dllt1pMPQ_caml.$(EXT_DLL) dllt1pD_caml.$(EXT_DLL) dllt1pMPFR_caml.$(EXT_DLL) dllt1pMPQ_caml_debug.$(EXT_DLL) dllt1pD_caml_debug.$(EXT_DLL) dllt1pMPFR_caml_debug.$(EXT_DLL)
+ endif
+ endif
+ 
+@@ -74,9 +74,9 @@ allMPQ: libt1pMPQ.a libt1pMPQ_debug.a
+ allD: libt1pD.a libt1pD_debug.a
+ allMPFR: libt1pMPFR.a libt1pMPFR_debug.a
+ ifneq ($(HAS_SHARED),)
+-allMPQ: libt1pMPQ.so libt1pMPQ_debug.so
+-allD: libt1pD.so libt1pD_debug.so
+-allMPFR: libt1pMPFR.so libt1pMPFR_debug.so
++allMPQ: libt1pMPQ.$(EXT_DLL) libt1pMPQ_debug.$(EXT_DLL)
++allD: libt1pD.$(EXT_DLL) libt1pD_debug.$(EXT_DLL)
++allMPFR: libt1pMPFR.$(EXT_DLL) libt1pMPFR_debug.$(EXT_DLL)
+ endif
+ 
+ exemple1%_debug: exemple1%_debug.o
+@@ -107,9 +107,9 @@ mlD: $(call OCAMLOPT_TARGETS, t1pD)
+ mlMPFR: $(call OCAMLOPT_TARGETS, t1pMPFR)
+ endif
+ ifneq ($(HAS_SHARED),)
+-mlMPQ: dllt1pMPQ_caml.so dllt1pMPQ_caml_debug.so
+-mlD: dllt1pD_caml.so  dllt1pD_caml_debug.so 
+-mlMPFR: dllt1pMPFR_caml.so dllt1pMPFR_caml_debug.so
++mlMPQ: dllt1pMPQ_caml.$(EXT_DLL) dllt1pMPQ_caml_debug.$(EXT_DLL)
++mlD: dllt1pD_caml.$(EXT_DLL)  dllt1pD_caml_debug.$(EXT_DLL) 
++mlMPFR: dllt1pMPFR_caml.$(EXT_DLL) dllt1pMPFR_caml_debug.$(EXT_DLL)
+ endif
+ 
+ mlexample%.byte: mlexample.ml t1p%.cma
+@@ -119,7 +119,7 @@ mlexample%.opt: mlexample.ml t1p%.cmxa
+ 	$(OCAMLOPT) $(OCAMLOPTFLAGS) -I $(MLGMPIDL_LIB) -I $(APRON_LIB) -o $@ bigarray.cmxa gmp.cmxa apron.cmxa t1p$*.cmxa $<
+ 
+ clean:
+-	/bin/rm -f *.[ao] *.so *.cm[ioax] *.cmx[as] *.byte *.opt *.annot
++	/bin/rm -f *.[ao] *.$(EXT_DLL) *.cm[ioax] *.cmx[as] *.byte *.opt *.annot
+ 	/bin/rm -f *.?.tex *.log *.aux *.bbl *.blg *.toc *.dvi *.ps *.pstex*
+ 	/bin/rm -fr t1ppolkarung t1ppolkatopg tmp
+ 	/bin/rm -fr test*
+@@ -143,7 +143,7 @@ endif
+ uninstall:
+ 	for i in $(CCINC_TO_INSTALL); do /bin/rm -f $(APRON_INCLUDE)/$$i; done
+ 	/bin/rm -f $(APRON_LIB)/libt1p*.* $(APRON_LIB)/libt1p*_debug.*
+-	/bin/rm -f $(APRON_LIB)/dllt1p*.so $(APRON_LIB)/dllt1p*_debug.so
++	/bin/rm -f $(APRON_LIB)/dllt1p*.$(EXT_DLL) $(APRON_LIB)/dllt1p*_debug.$(EXT_DLL)
+ 	/bin/rm -f $(APRON_LIB)/t1p.mli $(APRON_LIB)/t1p.ml $(APRON_LIB)/t1p.cm[ix] $(APRON_LIB)/t1p.idl $(APRON_LIB)/t1p*.cma $(APRON_LIB)/t1p*.cmx[as] $(APRON_LIB)/t1p*.a
+ 
+ 
+@@ -156,8 +156,8 @@ dist: $(CCSRC) Makefile perlscript_caml.pl t1p.idl t1p.ml t1p.mli t1p_caml.c
+ 
+ .SUFFIXES: .tex .c .h .a .o
+ 
+-.PRECIOUS: libt1p%.a libt1p%_debug.a libt1p%.so libt1p%_debug.so
+-.PRECIOUS: libt1p%_caml.a libt1p%_caml_debug.a dllt1p%_caml.so
++.PRECIOUS: libt1p%.a libt1p%_debug.a libt1p%.$(EXT_DLL) libt1p%_debug.$(EXT_DLL)
++.PRECIOUS: libt1p%_caml.a libt1p%_caml_debug.a dllt1p%_caml.$(EXT_DLL)
+ .PRECIOUS: %MPQ.o %D.o %MPFR.o
+ .PRECIOUS: %MPQ_debug.o %D_debug.o %MPFR_debug.o
+ .PRECIOUS: %.cmo %.cmx
+@@ -177,9 +177,9 @@ libt1p%_debug.a: $(subst .c,%_debug.o,$(CCMODULES:%=%.c))
+ ## mingw-w64 linker is not very smart and is sensitive to the library order
+ ## should work across all archs
+ ##
+-libt1p%.so:  $(subst .c,%.o,$(CCMODULES:%=%.c))
++libt1p%.$(EXT_DLL):  $(subst .c,%.o,$(CCMODULES:%=%.c))
+ 	$(CC_APRON_DYLIB) $(CFLAGS) -o $@ $^ $(LDFLAGS) -lbox$* -lpolkaMPQ $(LIBS)
+-libt1p%_debug.so: $(subst .c,%_debug.o,$(CCMODULES:%=%.c))
++libt1p%_debug.$(EXT_DLL): $(subst .c,%_debug.o,$(CCMODULES:%=%.c))
+ 	$(CC_APRON_DYLIB) $(CFLAGS_DEBUG) -o $@ $^ $(LDFLAGS) -lbox$*_debug -lpolkaMPQ_debug $(LIBS_DEBUG)
+ 
+ %MPQ.o: %.c
+@@ -203,10 +203,10 @@ libt1p%_debug.so: $(subst .c,%_debug.o,$(CCMODULES:%=%.c))
+ # OCaml binding
+ #---------------------------------------
+ 
+-dllt1p%_caml.so libt1p%_caml.a: t1p_caml.o libt1p%.a
++dllt1p%_caml.$(EXT_DLL) libt1p%_caml.a: t1p_caml.o libt1p%.a
+ 	$(OCAMLMKLIB) -o t1p$*_caml t1p_caml.o -L. -lt1p$* $(LDFLAGS) $(LIBS)
+ 
+-dllt1p%_caml_debug.so libt1p%_caml_debug.a: t1p_caml_debug.o libt1p%_debug.a
++dllt1p%_caml_debug.$(EXT_DLL) libt1p%_caml_debug.a: t1p_caml_debug.o libt1p%_debug.a
+ 	$(OCAMLMKLIB) -o t1p$*_caml_debug t1p_caml_debug.o -L. -lt1p$*_debug $(LDFLAGS) $(LIBS_DEBUG)
+ 
+ t1p_caml.o: t1p_caml.c

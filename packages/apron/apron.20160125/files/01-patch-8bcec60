@@ -1,0 +1,31 @@
+commit 8bcec6034a2e036703783aa7b63077534cad8046
+Author: Boris Yakobowski <yakobowski@adacore.com>
+Date:   Fri Apr 5 14:41:16 2019 +0200
+
+    Do not autodetect perl
+    
+    /usr/bin/perl does not work on windows, you need c:/usr/bin/perl instead.
+    'perl' works everywhere, so let's use this
+
+diff --git a/configure b/configure
+index cc43b1f..0923320 100755
+--- a/configure
++++ b/configure
+@@ -360,7 +360,7 @@ fi
+ searchbinreq "ar"; ar="$path"
+ searchbinreq "ranlib"; ranlib="$path"
+ searchbinreq "sed"; sed="$path"
+-searchbinreq "perl"; perl="$path"
++#searchbinreq "perl"; perl="$path"
+ searchbinreq "install"; install="$path"
+ 
+ 
+@@ -576,7 +576,7 @@ CXXFLAGS_DEBUG = -U__STRICT_ANSI__ -UNDEBUG -O0 -g $cxxflags
+ AR = $ar
+ RANLIB = $ranlib
+ SED = $sed
+-PERL = $perl
++PERL = perl
+ INSTALL = $install
+ INSTALLd = $install -d
+ 

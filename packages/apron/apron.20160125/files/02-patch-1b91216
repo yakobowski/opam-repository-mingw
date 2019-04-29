@@ -1,0 +1,103 @@
+commit 1b912168e5ef52de00c2a40e43374e0a930a1aaf
+Author: Boris Yakobowski <yakobowski@adacore.com>
+Date:   Fri Apr 5 14:46:49 2019 +0200
+
+    Fix link order
+    
+    Under windows, libraries must be properly ordered
+
+diff --git a/apron/Makefile b/apron/Makefile
+index 30a13dc..927d1d6 100644
+--- a/apron/Makefile
++++ b/apron/Makefile
+@@ -44,7 +44,7 @@ C_FILES_AUX = ap_linearize_aux.c
+ H_FILES_AUX = ap_linearize_aux.h
+ CH_FILES_AUX = $(H_FILES_AUX) $(C_FILES_AUX)
+ 
+-LDFLAGS += $(MP_LIFLAGS) -lm -lgmp -lmpfr
++LDFLAGS += $(MP_LIFLAGS) -lm -lmpfr -lgmp
+ 
+ #---------------------------------------
+ # Rules
+diff --git a/apronxx/Makefile b/apronxx/Makefile
+index 58df6bd..9553e60 100644
+--- a/apronxx/Makefile
++++ b/apronxx/Makefile
+@@ -49,8 +49,8 @@ CCINC = \
+  apxx_generator0_inline.hh   apxx_polka.hh              apxx_var_inline.hh		\
+  apxx_t1p.hh apxx_t1p_inline.hh	
+ 
+-LIBS = $(LDFLAGS) -lapron -lgmp -lgmpxx -lmpfr -lm
+-LIBS_DEBUG = $(LDFLAGS) -lapron_debug -lgmp -lgmpxx -lmpfr -lm
++LIBS = $(LDFLAGS) -lapron  -lmpfr -lgmpxx -lgmp -lm
++LIBS_DEBUG = $(LDFLAGS) -lapron_debug -lmpfr -lgmpxx -lgmp -lm
+ 
+ ifneq ($(HAS_PPL),)
+   DEFS := $(DEFS) -DHAS_PPL
+@@ -113,7 +113,7 @@ libapronxx_debug.so: $(subst .cc,_debug.o,$(CXXSOURCES))
+ 	$(CXX) $(CFLAGS_DEBUG) -shared -o $@ $^ $(LIBS_DEBUG)
+ 
+ apronxx_test: libapronxx_debug.a apronxx_test_debug.o
+-	$(CXX) $(CFLAGS_DEBUG) -o $@ apronxx_test_debug.o $(LIBS_DEBUG) -L../newpolka -lpolkaMPQ_debug -L../octagons -loctMPQ_debug -L../box -lboxMPQ_debug -L../taylor1plus -lt1pMPQ_debug libapronxx_debug.a
++	$(CXX) $(CFLAGS_DEBUG) -o $@ apronxx_test_debug.o -L../newpolka -lpolkaMPQ_debug -L../octagons -loctMPQ_debug -L../box -lboxMPQ_debug -L../taylor1plus -lt1pMPQ_debug libapronxx_debug.a $(LIBS_DEBUG)
+ 
+ %.o: %.cc $(CCINC)
+ 	$(CXX) $(CXXFLAGS) $(ICXXFLAGS) $(DEFS) -c -o $@ $<
+diff --git a/itv/Makefile b/itv/Makefile
+index 337a971..b284f26 100644
+--- a/itv/Makefile
++++ b/itv/Makefile
+@@ -2,7 +2,7 @@ include ../Makefile.config
+ include ../vars.mk
+ 
+ ICFLAGS += $(NUM_ICFLAGS) $(APRON_ICFLAGS) $(MP_ICFLAGS)
+-LDFLAGS += $(NUM_LIFLAGS) $(APRON_LIFLAGS) $(MP_LIFLAGS) -lapron_debug -lgmp -lmpfr -lm
++LDFLAGS += $(NUM_LIFLAGS) $(APRON_LIFLAGS) $(MP_LIFLAGS) -lapron_debug -lmpfr -lgmp -lm
+ 
+ #---------------------------------------
+ # Files
+diff --git a/ppl/Makefile b/ppl/Makefile
+index 501a1f6..2af6a73 100644
+--- a/ppl/Makefile
++++ b/ppl/Makefile
+@@ -35,8 +35,8 @@ CXXSOURCES = ppl_user.cc ppl_poly.cc ppl_grid.cc
+ CSOURCES = ppl_test.c
+ CCINC = ppl_user.hh ppl_poly.hh ppl_grid.hh ppl_grid.h ap_ppl.h
+ 
+-LIBS = -lppl -lapron -lgmpxx -lgmp -lmpfr -lm
+-LIBS_DEBUG = -lppl -lapron_debug -lgmpxx -lgmp -lmpfr -lm
++LIBS = -lppl -lapron -lgmpxx -lmpfr -lgmp -lm
++LIBS_DEBUG = -lppl -lapron_debug -lgmpxx -lmpfr -lgmp -lm
+ 
+ #---------------------------------------
+ # Rules
+diff --git a/products/Makefile b/products/Makefile
+index cc4817e..93ee313 100644
+--- a/products/Makefile
++++ b/products/Makefile
+@@ -48,8 +48,8 @@ ifneq ($(HAS_OCAML),)
+   endif
+ endif
+ 
+-LIBS = -lap_ppl -lppl -lapron -lgmpxx -lgmp -lmpfr -lm
+-LIBS_DEBUG = -lap_ppl_debug -lppl -lapron_debug -lgmpxx -lgmp -lmpfr -lm
++LIBS = -lap_ppl -lppl -lapron -lgmpxx -lmpfr -lgmp -lm
++LIBS_DEBUG = -lap_ppl_debug -lppl -lapron_debug -lgmpxx -lmpfr -lgmp -lm
+ 
+ #---------------------------------------
+ # Rules
+diff --git a/taylor1plus/Makefile b/taylor1plus/Makefile
+index 2c9388d..bef7b98 100644
+--- a/taylor1plus/Makefile
++++ b/taylor1plus/Makefile
+@@ -55,8 +55,8 @@ CAML_TO_INSTALL += dllt1pMPQ_caml.so dllt1pD_caml.so dllt1pMPFR_caml.so dllt1pMP
+ endif
+ endif
+ 
+-LIBS = -lapron -lgmpxx -lgmp -lmpfr -lm
+-LIBS_DEBUG = -lapron_debug -lgmpxx -lgmp -lmpfr -lm
++LIBS = -lapron -lgmpxx -lmpfr -lgmp -lm
++LIBS_DEBUG = -lapron_debug -lgmpxx -lmpfr -lgmp -lm
+ 
+ #---------------------------------------
+ # Rules
