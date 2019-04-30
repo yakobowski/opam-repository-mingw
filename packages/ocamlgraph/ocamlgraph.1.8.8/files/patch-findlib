@@ -1,0 +1,40 @@
+diff -u -r ocamlgraph-1.8.8-intact/configure ocamlgraph-1.8.8/configure
+--- ocamlgraph-1.8.8-intact/configure	2019-04-30 15:48:13.198890914 +0200
++++ ocamlgraph-1.8.8/configure	2019-04-30 15:48:39.982893012 +0200
+@@ -2249,15 +2249,7 @@
+ if test "$OCAMLFIND" = "" ; then
+    echo "No ocamlfind detected"
+ else
+-   OCAMLLIB_BY_FINDLIB=`ocamlfind printconf stdlib | tr -d '\\r' | tr '\\\\' '/'`
+-   if test "$OCAMLLIB_BY_FINDLIB" = "$OCAMLLIB" ; then
+-      echo "OCamlfind detected and enabled"
+-   else
+-      echo "OCamlfind detected but disabled. Standard libraries differ:"
+-      echo "  ocamlc: '$OCAMLLIB'"
+-      echo "  ocamlfind: '$OCAMLLIB_BY_FINDLIB'"
+-      OCAMLFIND=""
+-   fi
++   echo "OCamlfind detected and enabled"
+ fi
+ 
+ if test "$OCAMLBEST" = "opt"; then
+diff -u -r ocamlgraph-1.8.8-intact/configure.in ocamlgraph-1.8.8/configure.in
+--- ocamlgraph-1.8.8-intact/configure.in	2019-04-30 15:48:13.198890914 +0200
++++ ocamlgraph-1.8.8/configure.in	2019-04-30 15:48:51.190893596 +0200
+@@ -146,15 +146,7 @@
+ if test "$OCAMLFIND" = "" ; then
+    echo "No ocamlfind detected"
+ else
+-   OCAMLLIB_BY_FINDLIB=`ocamlfind printconf stdlib | tr -d '\\r' | tr '\\\\' '/'`
+-   if test "$OCAMLLIB_BY_FINDLIB" = "$OCAMLLIB" ; then
+-      echo "OCamlfind detected and enabled"
+-   else
+-      echo "OCamlfind detected but disabled. Standard libraries differ:"
+-      echo "  ocamlc: '$OCAMLLIB'"
+-      echo "  ocamlfind: '$OCAMLLIB_BY_FINDLIB'"
+-      OCAMLFIND=""
+-   fi
++   echo "OCamlfind detected and enabled"
+ fi
+ 
+ if test "$OCAMLBEST" = "opt"; then
