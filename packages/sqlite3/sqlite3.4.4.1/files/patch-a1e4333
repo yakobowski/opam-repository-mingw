@@ -1,0 +1,32 @@
+commit a1e4333482623bab5599bc766f5fb39657d26e9f
+Author: Boris Yakobowski <yakobowski@adacore.com>
+Date:   Thu Apr 4 11:31:17 2019 +0200
+
+    Restore compilation under windows
+
+diff --git a/src/dune b/src/dune
+index 01bf123..f36bc09 100644
+--- a/src/dune
++++ b/src/dune
+@@ -6,7 +6,7 @@
+     ; NOTE: for debugging before releases
+     ; -Wall -pedantic -Wextra -Wunused -Wno-long-long -Wno-keyword-macro
+   ))
+-  (c_library_flags (:include c_library_flags.sexp) -lpthread)
++  (c_library_flags (:include c_library_flags.sexp))
+ )
+ 
+ (rule
+diff --git a/src/sqlite3_stubs.c b/src/sqlite3_stubs.c
+index 0146298..dec8305 100644
+--- a/src/sqlite3_stubs.c
++++ b/src/sqlite3_stubs.c
+@@ -79,7 +79,7 @@
+ #include <windows.h>
+ typedef DWORD pthread_key_t;
+ 
+-void destroy_user_exception(void *user_exc_);
++static void destroy_user_exception(void *user_exc_);
+ 
+ static int pthread_key_create(pthread_key_t *key, void (*destructor)(void*))
+ {

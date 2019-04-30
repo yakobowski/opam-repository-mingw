@@ -24,13 +24,20 @@ depends: [
   "stdio" {build & < "v0.13"}
   "conf-sqlite3" {build}
 ]
-
+patches: [
+  "patch-d3fba38" {os = "win32"}
+  "patch-a1e4333" {os = "win32"}
+]
 synopsis: "SQLite3 bindings for OCaml"
 
 description: """
 sqlite3-ocaml is an OCaml library with bindings to the SQLite3 client API.
 Sqlite3 is a self-contained, serverless, zero-configuration, transactional SQL
 database engine with outstanding performance for many use cases."""
+extra-files: [
+  ["patch-d3fba38" "md5=b3a0d65ae147a01096392e668a80c2b3"]
+  ["patch-a1e4333" "md5=a02687a3a553fedc97bc827894f2633d"]
+]
 url {
   src:
     "https://github.com/mmottl/sqlite3-ocaml/releases/download/4.4.1/sqlite3-4.4.1.tbz"

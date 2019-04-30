@@ -1,0 +1,95 @@
+commit d3fba384dff93049bd3d11f28b992d852b588515
+Author: Dmitry Bely <dmitry.bely@gmail.com>
+Date:   Fri Mar 29 11:08:55 2019 +0300
+
+    Regain Windows support
+
+diff --git a/src/sqlite3.ml b/src/sqlite3.ml
+index 9d30855..6869664 100644
+--- a/src/sqlite3.ml
++++ b/src/sqlite3.ml
+@@ -322,9 +322,11 @@ end
+ (* Initialisation *)
+ 
+ external init : unit -> unit = "caml_sqlite3_init"
++external cleanup : unit -> unit = "caml_sqlite3_cleanup"
+ 
+ let () =
+   Callback.register_exception "Sqlite3.InternalError" (InternalError "");
+   Callback.register_exception "Sqlite3.Error" (Error "");
+   Callback.register_exception "Sqlite3.RangeError" (RangeError (0, 0));
++  at_exit cleanup;
+   init ()
+diff --git a/src/sqlite3_stubs.c b/src/sqlite3_stubs.c
+index ab4706b..0146298 100644
+--- a/src/sqlite3_stubs.c
++++ b/src/sqlite3_stubs.c
+@@ -37,7 +37,6 @@
+ #include <caml/signals.h>
+ 
+ #include <sqlite3.h>
+-#include <pthread.h>
+ 
+ #if __GNUC__ >= 3
+ # define inline inline __attribute__ ((always_inline))
+@@ -46,6 +45,9 @@
+ # endif
+ #else
+ # define __unused
++# ifdef inline
++#  undef inline
++# endif
+ # define inline
+ #endif
+ 
+@@ -71,6 +73,38 @@
+ # define SQLITE_HAS_OPEN_CACHE_PARAMS
+ #endif
+ 
++#ifndef _WIN32
++#include <pthread.h>
++#else
++#include <windows.h>
++typedef DWORD pthread_key_t;
++
++void destroy_user_exception(void *user_exc_);
++
++static int pthread_key_create(pthread_key_t *key, void (*destructor)(void*))
++{
++  CAMLassert(destructor == &destroy_user_exception);
++  *key = TlsAlloc();
++  if (*key == TLS_OUT_OF_INDEXES)
++    return GetLastError();
++  else
++    return 0;
++}
++
++static inline void *pthread_getspecific(pthread_key_t key)
++{
++  return TlsGetValue(key);
++}
++
++static int pthread_setspecific(pthread_key_t key, void *value)
++{
++  void *old = TlsGetValue(key);
++  if (old)
++    destroy_user_exception(old);
++  return TlsSetValue(key, value);
++}
++#endif
++
+ /* Utility definitions */
+ 
+ static const value Val_None = Val_int(0);
+@@ -269,6 +303,11 @@ CAMLprim value caml_sqlite3_init(value __unused v_unit)
+   return Val_unit;
+ }
+ 
++CAMLprim value caml_sqlite3_cleanup(value __unused v_unit)
++{
++  pthread_setspecific(user_exception_key, NULL);
++  return Val_unit;
++}
+ 
+ /* Conversion from return values */
+ 
