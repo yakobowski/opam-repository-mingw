@@ -11,12 +11,11 @@ base-unix base
 base64 3.1.0
 bin_prot v0.11.0
 biniou 1.2.0
-camlidl 1.05
+camlidl 1.06
 camlp4 4.07+1
 camlzip 1.07
 camomile 1.0.1
 cmdliner 1.0.3
-conf-autoconf 0.1
 conf-gmp 1
 conf-m4 1
 conf-mpfr 1
@@ -37,8 +36,9 @@ fieldslib v0.11.0
 integers 0.2.2
 jane-street-headers v0.11.0
 javalib 2.3.6
+jbuilder transition
 menhir 20181113
-mlgmpidl 1.2.7
+mlgmpidl 1.2.9
 mtime 1.1.0
 num 1.1
 ocaml 4.07.1
@@ -86,7 +86,7 @@ sawja 1.5.5
 seq base
 sexplib v0.11.0
 sexplib0 v0.11.0
-spawn v0.12.0
+spawn v0.13.0
 splittable_random v0.11.0
 sqlite3 4.4.1
 stdio v0.11.0
