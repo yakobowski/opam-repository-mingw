@@ -26,6 +26,6 @@ description:
   "This package can only install if the MPFR library is installed on the system."
 extra-files: [
   ["test.c" "md5=ac7e04b5e22a41cb3c028180d1b811d6"]
-  ["test-win.sh" "md5=8996b7deb1b5672264212c0f7218a4ce"]
+  ["test-win.sh" "md5=182b1ff7064e68bacc60f16cbfeb79f7"]
 ]
 flags: conf
