@@ -17,6 +17,12 @@ depends: [
   "ppx_expect" {with-test}
   "ocaml" {>= "4.02.3"}
 ]
+patches: [
+  "patch-safe_pipe"
+]
+extra-files: [
+  ["patch-safe_pipe" "md5=325386d2c471ffea513fc65fc42f4994"]
+]
 synopsis: "Spawning sub-processes"
 description: """
 Spawn is a small library exposing only one functionality: spawning sub-process.
