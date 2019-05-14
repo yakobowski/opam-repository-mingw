@@ -40,7 +40,7 @@ jbuilder transition
 menhir 20181113
 mlgmpidl 1.2.9
 mtime 1.1.0
-num 1.1
+num 1.2
 ocaml 4.07.1
 ocaml-system 4.07.1
 ocaml-compiler-libs v0.11.0
