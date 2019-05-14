@@ -8,7 +8,7 @@ from urllib.request import urlretrieve
 
 sources = "all.txt"
 
-regex = re.compile("src:\s*\"([^\"]*)\"")
+regex = re.compile("(src|archive):\s*\"([^\"]*)\"")
 
 class Opam_Pkg:
 
@@ -21,7 +21,7 @@ class Opam_Pkg:
             text = fn.read()
             m = regex.search(text)
             if m is not None:
-                url = m.group(1)
+                url = m.group(2)
                 self.url = url
             else:
                 self.url = None
@@ -53,7 +53,7 @@ class Opam_Pkg:
         with open(self.opamfile, 'r') as f:
             text = f.read()
         def urlrepl(m):
-            url = m.group(1)
+            url = m.group(2)
             filename = url[url.rfind('/')+1:]
             d, fn = self.localname()
             return "src: \"local/" + d + '/' + fn + "\""
