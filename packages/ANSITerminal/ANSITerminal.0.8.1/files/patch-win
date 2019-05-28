@@ -1,0 +1,32 @@
+diff --git a/src/ANSITerminal_win.ml b/src/ANSITerminal_win.ml
+index 5b3a958..1a7b18d 100644
+--- a/src/ANSITerminal_win.ml
++++ b/src/ANSITerminal_win.ml
+@@ -26,8 +26,7 @@ let () = Callback.register_exception "ANSITerminal.Error" (Error("",""))
+ 
+ let isatty = ref Unix.isatty
+ 
+-let is_out_channel_atty ch = !isatty(Unix.descr_of_out_channel ch)
+-
++let is_out_channel_atty _ch = false (* !isatty(Unix.descr_of_out_channel ch) *)
+ 
+ type rgb = R|G|B
+ 
+@@ -92,7 +91,7 @@ external win_set_style : out_channel -> int -> unit = "ANSITerminal_set_style"
+ external win_unset_style : out_channel -> unit
+   = "ANSITerminal_unset_style"
+ 
+-let () = win_init()
++let () = try win_init() with _ -> ()
+ 
+ let set_style ch styles =
+   let st = int_of_state (state_of_styles styles) in
+@@ -117,7 +116,7 @@ let printf style = kprintf (print_string style)
+ 
+ let eprintf style = ksprintf (prerr_string style)
+ 
+-let sprintf style = sprintf
++let sprintf _style = sprintf
+ 
+ external set_cursor_ : int -> int -> unit = "ANSITerminal_SetCursorPosition"
+ external pos_cursor : unit -> int * int = "ANSITerminal_pos"

@@ -19,6 +19,12 @@ depends: [
   "base-bytes"
   "base-unix"
 ]
+patches: [
+  "patch-win"  {os = "win32"}
+]
+extra-files: [
+  ["patch-win" "md5=ad5e1fc08a0b6c78cd4fe58e788a4d0d"]
+]
 synopsis: "Basic control of ANSI compliant terminals and the windows shell"
 description: """
 ANSITerminal is a module allowing to use the colors and cursor
