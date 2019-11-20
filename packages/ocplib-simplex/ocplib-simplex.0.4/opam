@@ -11,7 +11,7 @@ homepage: "https://github.com/OCamlPro-Iguernlala/ocplib-simplex"
 bug-reports: "https://github.com/OCamlPro-Iguernlala/ocplib-simplex/issues"
 dev-repo: "git+https://github.com/OCamlPro-Iguernlala/ocplib-simplex.git"
 build:[
-        ["autoconf"]
+        ["chmod" "+x" "configure"]
         ["./configure" "-prefix" "%{prefix}%"]
 	[make]
 ]
@@ -28,9 +28,9 @@ remove:[
 depends: [
   "ocaml" {>= "4.01.0"}
   "ocamlfind" {build}
-  "conf-autoconf" {build}
   "num"
 ]
+patches: [ "configure.patch" ]
 conflicts: [ "osdp" {= "0.5.4"} ]
 synopsis:
   "A library implementing a simplex algorithm, in a functional style, for solving systems of linear inequalities and optimizing linear objective functions"
@@ -40,6 +40,7 @@ simplex algorithm for solving systems of linear inequalities. The
 implementation is incremental and backtrackable. It is able to extract
 unsat-cores for unsatisfiable problems. Versions `> 0.1` also support
 linear optimization."""
+extra-files: ["configure.patch" "md5=123f3de5212f79d570840494881aa374"]
 flags: light-uninstall
 url {
   src:

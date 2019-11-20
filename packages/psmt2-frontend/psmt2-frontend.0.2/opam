@@ -9,7 +9,7 @@ homepage: "https://github.com/Coquera/psmt2-frontend"
 bug-reports: "https://github.com/Coquera/psmt2-frontend/issues"
 dev-repo: "git+https://github.com/Coquera/psmt2-frontend.git"
 build:[
-        ["autoconf"]
+        ["chmod" "+x" "configure"]
         ["./configure" "-prefix" "%{prefix}%"]
 	[make]
 ]
@@ -26,14 +26,15 @@ remove:[
 depends: [
   "ocaml" {>= "4.04.0"}
   "ocamlfind" {build}
-  "conf-autoconf" {build}
   "menhir"
 ]
+patches: [ "configure.patch" ]
 
 synopsis:
   "A library to parse and type-check a conservative extension of the SMT-LIB 2
   standard with prenex polymorphism"
 
+extra-files: ["configure.patch" "md5=f6fe1bebf2a039436fd487d7057d4548"]
 flags: light-uninstall
 
 url {
