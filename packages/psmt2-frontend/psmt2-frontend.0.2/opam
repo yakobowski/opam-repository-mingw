@@ -9,6 +9,7 @@ homepage: "https://github.com/Coquera/psmt2-frontend"
 bug-reports: "https://github.com/Coquera/psmt2-frontend/issues"
 dev-repo: "git+https://github.com/Coquera/psmt2-frontend.git"
 build:[
+        ["chmod" "+x" "configure"]
         ["./configure" "-prefix" "%{prefix}%"]
 	[make]
 ]

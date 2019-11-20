@@ -11,6 +11,7 @@ homepage: "https://github.com/OCamlPro-Iguernlala/ocplib-simplex"
 bug-reports: "https://github.com/OCamlPro-Iguernlala/ocplib-simplex/issues"
 dev-repo: "git+https://github.com/OCamlPro-Iguernlala/ocplib-simplex.git"
 build:[
+        ["chmod" "+x" "configure"]
         ["./configure" "-prefix" "%{prefix}%"]
 	[make]
 ]
