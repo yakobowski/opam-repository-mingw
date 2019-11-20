@@ -13,6 +13,7 @@ bin_prot v0.11.0
 biniou 1.2.0
 camlidl 1.06
 camlp4 4.07+1
+camlp5 7.06.10-g84ce6cc4
 camlzip 1.07
 camomile 1.0.1
 cmdliner 1.0.3
